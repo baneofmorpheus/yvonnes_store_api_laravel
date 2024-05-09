@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->boolean('is_active');
-            $table->unsignedBigInteger('default_store_id');
+            $table->unsignedBigInteger('oauth_id');
+            $table->string('oauth_type')->comment('google or apple');
 
             $table->timestamps();
         });

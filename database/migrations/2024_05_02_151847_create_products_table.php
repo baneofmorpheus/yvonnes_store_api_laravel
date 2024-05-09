@@ -17,6 +17,7 @@ return new class extends Migration
 
             $table->foreign('store_id')->references('id')->on('stores');
             $table->string('sku');
+            $table->string('image_url')->nullable();
             $table->string('unit');
 
             $table->timestamps();
