@@ -19,7 +19,12 @@ class User extends Authenticatable
     protected $fillable = [
         'first_name',
         'last_name',
-        'oauth_id',
+        'google_id',
+        'google_access_token',
+        'google_refresh_token',
+        'apple_id',
+        'apple_access_token',
+        'apple_refresh_token',
         'oauth_type'
     ];
 
@@ -28,10 +33,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = [];
 
     /**
      * Get the attributes that should be cast.
@@ -40,9 +42,6 @@ class User extends Authenticatable
      */
     protected function casts(): array
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return [];
     }
 }

@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->boolean('is_active');
-            $table->unsignedBigInteger('oauth_id');
-            $table->string('oauth_type')->comment('google or apple');
+            $table->boolean('is_active')->default(true);
+            $table->string('google_id')->nullable();
+            $table->string('google_access_token')->nullable();
+            $table->string('apple_id')->nullable();
+            $table->string('apple_access_token')->nullable();
+            $table->string('apple_refresh_token')->nullable();
 
             $table->timestamps();
         });

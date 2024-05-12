@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('login_history', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-
+            $table->string('ip_address');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
