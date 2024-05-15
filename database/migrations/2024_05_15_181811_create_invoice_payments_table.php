@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('invoice_payments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('store_id');
-
-            $table->foreign('store_id')->references('id')->on('stores');
-            $table->string('sku')->unique();
-            $table->string('image_url')->nullable();
-            $table->string('unit');
-            $table->unsignedBigInteger('unit_price');
-
+            $table->unsignedBigInteger('invoice_id');
+            $table->foreign('invoice_id')->references('id')->on('invoices');
+            $table->string('payment_type')->comment('cash,cheque etc');
+            $table->longString('notes');
+            $table->unsignedBigInteger('amount_paid');
 
             $table->timestamps();
         });
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('invoice_payments');
     }
 };
