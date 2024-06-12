@@ -26,4 +26,6 @@ class UserFactory extends Factory
             'last_name' => fake()->name(),
         ];
     }
+
+
 }

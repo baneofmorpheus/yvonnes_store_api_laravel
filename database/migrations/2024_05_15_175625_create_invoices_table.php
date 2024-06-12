@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
 return new class extends Migration
 {
     /**
@@ -16,6 +15,8 @@ return new class extends Migration
             $table->string('code');
             $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('id')->on('customers');
+            $table->unsignedBigInteger('store_id');
+            $table->foreign('store_id')->references('id')->on('stores');
 
 
             $table->unsignedBigInteger('sub_total')->comment('total including discount excluding tax');
@@ -24,8 +25,8 @@ return new class extends Migration
             $table->unsignedBigInteger('payment_balance');
             $table->unsignedBigInteger('tax_amount');
             $table->string('status')->comment('paid,pending_payment,part_payment,refunded');
-            $table->longText('notes');
-            $table->unsignedBigInteger('tax_percentage');
+            $table->longText('notes')->nullable();
+            $table->integer('tax_percentage');
 
             $table->timestamps();
         });

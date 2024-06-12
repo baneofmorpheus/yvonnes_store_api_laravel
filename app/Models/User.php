@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -43,5 +45,10 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [];
+    }
+
+    public function stores(): HasMany
+    {
+        return $this->hasMany(Store::class);
     }
 }

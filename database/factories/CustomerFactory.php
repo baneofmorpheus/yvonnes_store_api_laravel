@@ -2,12 +2,14 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Store;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
-class SupplierFactory extends Factory
+class CustomerFactory extends Factory
 {
     /**
      * The current password being used by the factory.
@@ -22,8 +24,12 @@ class SupplierFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'store_id' => Store::get()->random()->id,
+            'first_name' => fake()->name(),
+            'last_name' => fake()->name(),
+            'company' => fake()->company(),
+            'notes' => fake()->paragraphs(2, true),
+            'store_id'=> Store::get()->random()->id,
+
         ];
     }
 }

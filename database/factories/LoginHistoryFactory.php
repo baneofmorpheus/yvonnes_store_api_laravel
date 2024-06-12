@@ -22,7 +22,7 @@ class LoginHistoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::random()->get()->id,
+            'user_id' => User::get()->random()->id,
             'ip_address' => fake()->localIpv4(),
         ];
     }

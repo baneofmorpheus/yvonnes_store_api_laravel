@@ -14,7 +14,10 @@ class PurchaseSeeder extends Seeder
     {
 
         Purchase::factory()
-            ->count(100)->hasPurchaseItems(1,['store_id'=>1])
+            ->count(100)->hasPurchaseItems(20,['store_id'=>1])
             ->create(['store_id'=>1]);
+        Purchase::factory()
+            ->count(100)->hasPurchaseItems(20)
+            ->create();
     }
 }

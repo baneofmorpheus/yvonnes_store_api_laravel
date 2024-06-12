@@ -17,9 +17,9 @@ return new class extends Migration
 
             $table->foreign('invoice_item_id')->references('id')->on('invoice_items');
 
-            $table->unsignedBigInteger('invoice_item_id');
+            $table->unsignedBigInteger('purchase_item_id');
 
-            $table->foreign('purchase_item_id')->references('id')->on('purchase_item_id');
+            $table->foreign('purchase_item_id')->references('id')->on('purchase_items');
             $table->integer('quantity_used_from_purchase');
             $table->integer('quantity_remaining_from_purchase');
 

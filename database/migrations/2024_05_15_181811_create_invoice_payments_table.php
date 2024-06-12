@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('invoice_id');
             $table->foreign('invoice_id')->references('id')->on('invoices');
-            $table->string('payment_type')->comment('cash,cheque etc');
-            $table->longString('notes');
+            $table->string('payment_type')->comment('cash,cheque,transfer,pos etc');
+            $table->longText('notes')->nullable();
             $table->unsignedBigInteger('amount_paid');
 
             $table->timestamps();

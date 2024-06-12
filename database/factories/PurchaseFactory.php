@@ -19,8 +19,8 @@ class PurchaseFactory extends Factory
     public function definition(): array
     {
         return [
-            'store_id' => Store::random()->get()->id,
-            'purchase_id' => Purchase::random()->get()->id,
+            'store_id' => Store::get()->random()->id,
+            'supplier_id' => Store::get()->random()->id,
             'total'=>fake()->randomNumber(6,true)
         ];
     }

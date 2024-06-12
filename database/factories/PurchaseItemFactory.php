@@ -20,10 +20,11 @@ class PurchaseItemFactory extends Factory
     public function definition(): array
     {
         return [
-            'store_id' => Store::random()->get()->id,
-            'sku'=>Str::random(7),
-            'image_url'=>fake()->imageUrl(),
-            'unit'=>fake()->numberBetween(1000,3000)
+            'store_id' => Store::get()->random()->id,
+            'purchase_id' => Purchase::get()->random()->id,
+            'quantity_purchased'=>fake()->numberBetween(30,40),
+            'quantity_available'=>fake()->numberBetween(20,40),
+            'unit_price'=>fake()->numberBetween(1000,3000)
         ];
     }
 }

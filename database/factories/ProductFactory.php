@@ -5,6 +5,8 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Store;
 use App\Models\Purchase;
+use Illuminate\Support\Str;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
@@ -19,11 +21,13 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'store_id' => Store::random()->get()->id,
-            'purchase_id' => Purchase::random()->get()->id,
-            'quantity_purchased'=>fake()->numberBetween(20,100),
-            'quantity_available'=>fake()->numberBetween(10,30),
-            'unit_price'=>fake()->numberBetween(1000,3000)
+            'name' => fake()->company(),
+            'store_id' => Store::get()->random()->id,
+            'unit_price' => fake()->numberBetween(1000, 3000),
+            'sku' => Str::random(7),
+            'unit' => fake()->word(),
+            'image_url' => fake()->imageUrl(),
+
         ];
     }
 }
