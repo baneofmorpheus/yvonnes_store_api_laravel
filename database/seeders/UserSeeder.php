@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
     {
         User::factory()
             ->hasStores(1, ['name' => 'SoulTrain', 'is_default' => true])
-            ->create(['first_name' => 'Yvonne', 'last_name' => 'Chux']);
+            ->create(['name' => 'Yvonne Chux']);
         User::factory()
             ->count(50)->hasStores(1)
             ->create();
