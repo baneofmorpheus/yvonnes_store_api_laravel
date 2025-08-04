@@ -4,7 +4,6 @@ namespace App\Services\Auth;
 
 
 use App\Models\User;
-use Exception;
 
 class AuthService
 {
