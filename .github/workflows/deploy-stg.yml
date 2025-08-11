@@ -30,4 +30,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: registry.digitalocean.com/drewl/yvonnes-store-api:stg
+          tags: registry.digitalocean.com/three-blind-mice/yvonnes-store-api:stg
