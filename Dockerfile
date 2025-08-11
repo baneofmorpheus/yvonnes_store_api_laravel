@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     git \
     cron \
     supervisor \
-    postgresql-client \
+    default-mysql-client \
     libfreetype-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
