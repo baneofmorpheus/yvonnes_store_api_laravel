@@ -30,4 +30,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: registry.digitalocean.com/three-blind-mice/yvonnes-store-api:prd
+          tags: registry.gitlab.com/baneofmorpheus/3bm-container-registry:prd
