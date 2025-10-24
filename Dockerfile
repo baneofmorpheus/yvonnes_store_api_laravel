@@ -4,7 +4,6 @@ FROM php:8.3-fpm
 # Install system dependencies and PHP extensions
 # These change infrequently and take long to install
 RUN apt-get update && apt-get install -y \
-    nginx \
     libicu-dev \
     libpq-dev \
     libzip-dev \
