@@ -2,7 +2,6 @@
 
 env > /var/cron.env
 
-composer install
 
 
 
@@ -28,4 +27,4 @@ php artisan scout:sync-index-settings
 php artisan scout:import "App\Models\Invoice"
 
 
-php-fpm
+exec php-fpm
