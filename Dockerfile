@@ -14,7 +14,7 @@ RUN apk add --no-cache \
     libpng-dev
 
 RUN  docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd intl zip pdo pdo_mysql
+    && docker-php-ext-install -j$(nproc) gd intl zip pdo pdo_mysql
 
 # Install Composer (rarely changes)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
