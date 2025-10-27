@@ -31,6 +31,5 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: registry.digitalocean.com/three-blind-mice/yvonnes-store-api:stg
-          platforms: linux/amd64,linux/arm64
           cache-from: type=registry,ref=registry.digitalocean.com/three-blind-mice/yvonnes-store-api:buildcache
           cache-to: type=registry,ref=registry.digitalocean.com/three-blind-mice/yvonnes-store-api:buildcache,mode=max
