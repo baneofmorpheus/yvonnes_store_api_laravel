@@ -31,3 +31,4 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: registry.digitalocean.com/three-blind-mice/yvonnes-store-api:stg
+          platforms: linux/amd64,linux/arm64
