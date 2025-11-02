@@ -38,6 +38,7 @@ FROM php:8.3-fpm-alpine
 # These change infrequently and take long to install
 RUN apk add --no-cache \
     git \
+    bash \
     dcron \
     supervisor \
     mysql-client \
