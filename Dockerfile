@@ -3,18 +3,20 @@ FROM php:8.3-fpm-alpine AS builder
 
 # Install system dependencies and PHP extensions
 # These change infrequently and take long to install
-RUN apk add --no-cache \
-    icu-dev \
+RUN apk add --no-cache  --virtual .build-deps   \
     postgresql-dev\
     libzip-dev \
+    libpng-dev  \
     supervisor \
     mysql-client \
+    libwebp-dev \
     freetype-dev \
     libjpeg-turbo-dev \
-    libpng-dev
+    mariadb-connector-c-dev
 
-RUN  docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd intl zip pdo pdo_mysql
+RUN  docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) gd  zip pdo pdo_mysql \
+    && apk del .build-deps
 
 # Install Composer (rarely changes)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -24,10 +26,11 @@ WORKDIR /app
 
 COPY composer.json composer.lock ./
 
+
 COPY . .
 
-
 RUN composer install --no-dev --optimize-autoloader --no-interaction --verbose
+
 
 
 
@@ -36,17 +39,18 @@ FROM php:8.3-fpm-alpine
 
 # Install system dependencies and PHP extensions
 # These change infrequently and take long to install
-RUN apk add --no-cache \
+RUN apk add --no-cache  \
     git \
     bash \
     dcron \
     supervisor \
     mysql-client \
-    icu-libs \
-    libzip \
     libpng \
+    libwebp  \
     libjpeg-turbo \
-    freetype
+    freetype\
+    libzip \
+    && mkdir -p /var/log/supervisor
 
 
 
@@ -54,10 +58,9 @@ WORKDIR /var/www/html
 
 # Copy built app from builder stage
 COPY --from=builder /app /var/www/html
+COPY --from=builder /usr/local/lib/php/extensions /usr/local/lib/php/extensions
+COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 
-
-# Copy configuration files (change occasionally)
-COPY nginx.conf /etc/nginx/sites-available/default
 
 # Copy Supervisor configuration
 COPY supervisord.conf /etc/supervisor/supervisord.conf
