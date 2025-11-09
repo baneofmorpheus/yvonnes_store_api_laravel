@@ -42,6 +42,7 @@ FROM php:8.3-fpm-alpine
 RUN apk add --no-cache  \
     git \
     bash \
+    nginx \
     dcron \
     supervisor \
     mysql-client \
@@ -64,6 +65,10 @@ COPY --from=builder /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 
 # Copy Supervisor configuration
 COPY supervisord.conf /etc/supervisor/supervisord.conf
+
+# Copy configuration files (change occasionally)
+COPY nginx.conf /etc/nginx/http.d/default.conf
+
 
 # Copy cron job file
 COPY ./laravel-cron /etc/cron.d/laravel-cron
