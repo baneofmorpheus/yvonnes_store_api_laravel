@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('company')->nullable();
             $table->longText('notes')->nullable();
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

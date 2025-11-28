@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreign('purchase_item_id')->references('id')->on('purchase_items');
             $table->integer('quantity_used_from_purchase');
             $table->integer('quantity_remaining_from_purchase');
+            $table->softDeletes();
 
             $table->timestamps();
         });

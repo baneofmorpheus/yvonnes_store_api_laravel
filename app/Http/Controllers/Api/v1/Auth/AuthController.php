@@ -16,7 +16,7 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use  App\Http\Resources\UserResource;
 use App\Http\Resources\StoreResource;
-use App\Services\Auth\StoreService;
+use App\Services\StoreService;
 
 use function PHPUnit\Framework\isNull;
 
@@ -29,7 +29,6 @@ class AuthController extends Controller
 
     public function loginSocial(SocialAuthRequest $request)
     {
-
         try {
             $validated_data = $request->validated();
             $oauth_user = Socialite::driver($validated_data['provider'])->userFromToken($validated_data['access_token']);
@@ -68,7 +67,7 @@ class AuthController extends Controller
                 'token_expires_at' => Carbon::now()->addYear()
             ]);
 
-            $default_store_user = StoreService::getUserDefaultStore($user->id);
+            $default_store_user = StoreService::getDefaultStoreUser($user->id);
 
 
             $user->refresh();
@@ -99,11 +98,11 @@ class AuthController extends Controller
 
         $ip = request()->ip();
 
-        if (!LoginHistory::where('ip', $ip)->first()) {
+        if (!LoginHistory::where('ip_address', $ip)->first()) {
         }
         LoginHistory::create([
             'user_id' => $user_id,
-            'ip' =>  $ip,
+            'ip_address' =>  $ip,
             'country' => 'not available',
             'browser' => request()->userAgent(),
             'date' => now(),

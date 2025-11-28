@@ -12,7 +12,7 @@ class LoginHistory extends Model
     protected $table = "login_history";
     protected $fillable = [
         'user_id',
-        'ip',
+        'ip_address',
         'browser',
         'country'
     ];

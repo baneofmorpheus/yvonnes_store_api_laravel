@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('unit_price');
             $table->unsignedBigInteger('item_total');
 
+            $table->softDeletes();
 
             $table->timestamps();
         });

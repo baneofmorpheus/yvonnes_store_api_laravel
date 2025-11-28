@@ -30,6 +30,9 @@ return new class extends Migration
             $table->longText('notes')->nullable();
             $table->integer('tax_percentage');
 
+            $table->softDeletes();
+
+
             $table->timestamps();
         });
     }

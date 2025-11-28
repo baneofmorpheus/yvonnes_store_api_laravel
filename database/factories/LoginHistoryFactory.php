@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
@@ -24,6 +25,8 @@ class LoginHistoryFactory extends Factory
         return [
             'user_id' => User::get()->random()->id,
             'ip_address' => fake()->localIpv4(),
+            'country' => fake()->country(),
+            'browser' => fake()->userAgent(),
         ];
     }
 }

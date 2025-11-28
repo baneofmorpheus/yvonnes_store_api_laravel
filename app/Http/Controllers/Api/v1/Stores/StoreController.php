@@ -10,7 +10,7 @@ use App\Http\Requests\Store\AddUserToStoreRequest;
 use App\Http\Requests\Store\RemoveUserFromStoreRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Services\Auth\StoreService;
+use App\Services\StoreService;
 use Illuminate\Support\Facades\Log;
 
 
@@ -45,7 +45,7 @@ class StoreController extends Controller
             StoreService::addUserToStore(
                 $user->id,
                 $store_id,
-                $validated['role']
+                'staff'
             );
 
             /**

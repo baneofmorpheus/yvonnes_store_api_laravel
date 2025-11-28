@@ -18,6 +18,8 @@ return new class extends Migration
             $table->boolean('is_default')->default(false);
 
             $table->foreign('user_id')->references('id')->on('users');
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

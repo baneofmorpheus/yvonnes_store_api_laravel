@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('payment_type')->comment('cash,cheque,transfer,pos etc');
             $table->longText('notes')->nullable();
             $table->unsignedBigInteger('amount');
+            $table->softDeletes();
 
             $table->timestamps();
         });

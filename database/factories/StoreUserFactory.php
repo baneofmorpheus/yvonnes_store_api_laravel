@@ -2,14 +2,13 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
-class UserFactory extends Factory
+class StoreUserFactory extends Factory
 {
     /**
      * The current password being used by the factory.
@@ -24,10 +23,9 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->email(),
-            'provider_id' => Str::uuid(),
-            'provider' => 'google',
+            'user_id' => User::factory(),
+            'store_id' => User::factory(),
+            'role' => fake()->randomElement(['owner', 'staff']),
         ];
     }
 }

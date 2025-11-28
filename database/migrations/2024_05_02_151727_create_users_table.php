@@ -17,7 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->boolean('is_active')->default(true);
             $table->string('provider')->nullable()->comment('firebase_id');
+            $table->string('token')->nullable();
+            $table->dateTime('token_expires_at')->nullable();
+
             $table->string('provider_id')->nullable();
+            $table->softDeletes();
 
             $table->timestamps();
         });
