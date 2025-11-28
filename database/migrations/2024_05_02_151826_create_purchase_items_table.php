@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('purchase_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('purchase_id');
-            $table->unsignedBigInteger('store_id');
 
 
             $table->foreign('purchase_id')->references('id')->on('purchases');
-            $table->foreign('store_id')->references('id')->on('stores');
             $table->integer('quantity_purchased');
             $table->integer('quantity_available');
             $table->unsignedBigInteger('unit_price');
+            $table->unsignedBigInteger('item_total');
+
 
             $table->timestamps();
         });

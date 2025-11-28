@@ -10,6 +10,7 @@
         "kreait/firebase-php": "^7.12",
         "laravel/framework": "^11.0",
         "laravel/scout": "^10.17",
+        "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.9",
         "meilisearch/meilisearch-php": "^1.15"
     },

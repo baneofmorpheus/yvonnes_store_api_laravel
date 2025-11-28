@@ -53,6 +53,7 @@ RUN apk add --no-cache  \
     libzip \
     && mkdir -p /var/log/supervisor
 
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 
 WORKDIR /var/www/html

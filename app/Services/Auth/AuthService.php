@@ -11,7 +11,7 @@ class AuthService
     {
 
         $auth = app('firebase.auth');
-        $verified_id_token = auth->verifyIdToken($verification_data['id_token']);
+        $verified_id_token = $auth->verifyIdToken($verification_data['id_token']);
 
         $uid = $verified_id_token->claims()->get('sub');
         $user = User::where('google_id', $uid)->first();

@@ -12,23 +12,19 @@ class PurchaseItem extends Model
 
     protected $fillable = [
         'purchase_id',
-        'store_id',
         'quantity_purchased',
-        'quantity_available',
+        'quantity_remaining',
         'unit_price',
-        'total',
+        'product_id',
     ];
 
-    public function store(): BelongsTo
-    {
-        return $this->belongsTo(Store::class);
-    }
 
     public function purchase(): BelongsTo
     {
         return $this->belongsTo(Purchase::class);
     }
-
-
-
+    public function prodcut(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

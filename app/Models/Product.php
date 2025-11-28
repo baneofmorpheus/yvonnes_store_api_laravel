@@ -11,17 +11,16 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'sku',
         'store_id',
         'image_url',
         'unit',
+        'quantity_remaining'
     ];
 
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class);
     }
-
-
-
 }

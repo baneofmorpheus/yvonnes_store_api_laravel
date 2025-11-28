@@ -4,22 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\User;
 
 class LoginHistory extends Model
 {
     use HasFactory;
 
+    protected $table = "login_history";
     protected $fillable = [
-        'name',
         'user_id',
-        'is_default',
+        'ip',
+        'browser',
+        'country'
     ];
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
 }

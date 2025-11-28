@@ -1,0 +1,164 @@
+<?php
+
+namespace App\Http\Controllers\Api\v1\Organization;
+
+use App\Http\Controllers\Controller;
+use App\Traits\ApiResponser;
+use App\Http\Requests\Invoice\CreateInvoiceRequest;
+use App\Http\Resources\InvoiceResource;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Models\Product;
+
+class InvoiceController extends Controller
+{
+
+    use ApiResponser;
+
+
+
+
+    public function createInvoice(CreateInvoiceRequest $request)
+    {
+
+        try {
+            $validated_data = $request->validated();
+
+            DB::beginTransaction();
+            $sub_total = collect($validated_data['items'])
+                ->sum(fn($item) => $item['quantity_purchased'] * $item['unit_price']);
+
+            $tax_amount = ($sub_total * ($validated_data['tax_percentage'] / 100));
+
+            $total = ($sub_total - $validated_data['discount_amount']) + $tax_amount;
+
+            $invoice =  Invoice::create([
+                'store_id' => $validated_data['store_id'],
+                'customer_id' => $validated_data['customer_id'],
+                'discount_amount' => $validated_data['discount_amount'],
+                'tax_percentage' => $validated_data['tax_percentage'],
+                'status' => $validated_data['status'],
+                'notes' => $validated_data['notes'],
+                'tax_amount' => $tax_amount,
+
+                'total' => $total,
+                'payment_balance' => $total,
+            ]);
+
+            foreach ($validated_data['items'] as $item) {
+
+                $product = Product::findOrFail($item['product_id']);
+                if ($product->quantity_remaining < $item['quantity_purchased']) {
+                    return $this->errorResponse('Insufficient stock for product: ' . $product->name, 400, []);
+                }
+                InvoiceItem::create([
+                    'invoice_id'        => $invoice->id,
+                    'product_id'         => $item['product_id'],
+                    'quantity_purchased' => $item['quantity_purchased'],
+                    'unit_price'         => $item['unit_price'],
+                    'item_total'         => $item['quantity_purchased'] * $item['unit_price'],
+                ]);
+            }
+
+            $invoice->refresh();
+            DB::commit();
+            return $this->successResponse('Invoice created ', 201, [
+                'purchase' => new InvoiceResource($invoice)
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error("InvoiceController@createInvoice", ["error" => $e->getMessage(), 'payload' => request()->all()]);
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+
+    public function getInvoices(int $store_id)
+    {
+
+        try {
+
+
+            $user = auth()->user();
+
+            if (!$user->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('Unauthorized', 403);
+            }
+
+            $perPage =  request('per_page') ?? 20;
+
+            $invoices = Invoice::where('store_id', $store_id)
+                ->orderBy('created_at', 'desc')->paginate($perPage);
+
+
+
+
+
+
+
+            return $this->successResponse('Invoices retrieved', 200, [
+                'invoices' =>  InvoiceResource::collection($invoices->items()),
+            ]);
+        } catch (\Exception $e) {
+            Log::error("InvoiceController@getInvoices", ["error" => $e->getMessage()]);
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+
+
+    public function getInvoice(int $invoice_id, int $store_id)
+    {
+
+        try {
+
+            $user = auth()->user();
+
+            if (!$user->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('Unauthorized', 403);
+            }
+
+            $invoice = Invoice::where('id', $invoice_id)->where('store_id', $store_id)->firstOrFail();
+
+            return $this->successResponse('Supplier retrieved', 200, [
+                'invoice' =>  new InvoiceResource($invoice)
+
+            ]);
+        } catch (\Exception $e) {
+            Log::error("InvoiceController@getInvoice", [
+                "error" => $e->getMessage(),
+                'payload' => request()->all()
+            ]);
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+
+
+    public function deleteInvoice(int $invoice_id, int $store_id)
+    {
+        try {
+
+            $user = auth()->user();
+
+            if (!$user->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('Unauthorized', 403);
+            }
+
+            $invoice = Invoice::where('id', $invoice_id)
+                ->where('store_id', $store_id)->firstOrFail();
+
+            $invoice->delete();
+
+
+            return $this->successResponse('Invoice deleted', 200, []);
+        } catch (\Exception $e) {
+
+            Log::error("InvoiceController@deleteInvoice", [
+                "error" => $e->getMessage(),
+                'payload' => request()->all()
+            ]);
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+}

@@ -15,14 +15,20 @@ class Store extends Model
     protected $fillable = [
         'name',
         'user_id',
-        'is_default',
     ];
 
-    public function user(): BelongsTo
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class, 'store_users')
+            ->using(StoreUser::class)
+            ->withPivot(['role'])
+            ->withTimestamps();
     }
 
+    public function storeUsers()
+    {
+        return $this->hasMany(StoreUser::class);
+    }
     public function customers(): HasMany
     {
         return $this->hasMany(Customer::class);
@@ -32,5 +38,4 @@ class Store extends Model
     {
         return $this->hasMany(Invoice::class);
     }
-
 }

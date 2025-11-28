@@ -13,12 +13,7 @@ class Supplier extends Model
 
     protected $fillable = [
         'name',
-        'store_id',
+        'phone_number',
+        'address',
     ];
-
-    public function store(): BelongsTo
-    {
-        return $this->belongsTo(Store::class);
-    }
-
 }

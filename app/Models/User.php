@@ -19,15 +19,10 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'google_id',
-        'google_access_token',
-        'google_refresh_token',
-        'apple_id',
-        'apple_access_token',
-        'apple_refresh_token',
-        'oauth_type'
+        'name',
+        'email',
+        'provider_id',
+
     ];
 
     /**
@@ -47,8 +42,24 @@ class User extends Authenticatable
         return [];
     }
 
-    public function stores(): HasMany
+    public function stores()
     {
-        return $this->hasMany(Store::class);
+        return $this->belongsToMany(Store::class, 'store_users')
+            ->using(StoreUser::class)
+            ->withPivot(['role'])
+            ->withTimestamps();
+    }
+
+    public function storeBelongsToUser(int $store_id): HasMany
+    {
+
+        return  StoreUser::where('id', $store_id)
+            ->where('user_id', $this->id)->exists();
+    }
+    public function getStoreRole(int $store_id): HasMany
+    {
+
+        return  StoreUser::where('id', $store_id)
+            ->where('user_id', $this->id)->first()?->role;
     }
 }

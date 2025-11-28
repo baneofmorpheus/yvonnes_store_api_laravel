@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+
 return new class extends Migration
 {
     /**
@@ -24,7 +25,8 @@ return new class extends Migration
             $table->unsignedBigInteger('total');
             $table->unsignedBigInteger('payment_balance');
             $table->unsignedBigInteger('tax_amount');
-            $table->string('status')->comment('paid,pending_payment,part_payment,refunded');
+            $table->string('status')
+                ->comment('paid,pending_payment,part_payment,refunded')->default('pending_payment');
             $table->longText('notes')->nullable();
             $table->integer('tax_percentage');
 

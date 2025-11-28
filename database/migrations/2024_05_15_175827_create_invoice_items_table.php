@@ -21,7 +21,6 @@ return new class extends Migration
             $table->integer('quantity_purchased');
             $table->unsignedBigInteger('unit_price');
             $table->unsignedBigInteger('item_total');
-            $table->boolean('override_stock')->default(false);
 
             $table->timestamps();
         });
