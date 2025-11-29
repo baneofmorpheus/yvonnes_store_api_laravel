@@ -23,7 +23,6 @@ return new class extends Migration
 
             $table->string('role');
             $table->boolean('is_default')->default(false);
-            $table->softDeletes();
 
             $table->timestamps();
         });

@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'provider_id',
         'provider_name',
+        'is_active',
 
     ];
 
@@ -56,10 +57,10 @@ class User extends Authenticatable
         return  StoreUser::where('id', $store_id)
             ->where('user_id', $this->id)->exists();
     }
-    public function getStoreRole(int $store_id): HasMany
+    public function getStoreRole(int $store_id): string
     {
 
-        return  StoreUser::where('id', $store_id)
+        return  StoreUser::where('store_id', $store_id)
             ->where('user_id', $this->id)->first()?->role;
     }
 }

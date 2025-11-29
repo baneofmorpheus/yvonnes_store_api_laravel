@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\v1\Auth\AuthController;
-
+use App\Http\Controllers\Api\v1\Stores\StoreController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +27,10 @@ use App\Http\Controllers\Api\v1\Auth\AuthController;
 Route::group(['prefix' => 'v1', 'middleware' => ['auth:api', 'throttle:api']], function () {
     Route::group(['prefix' => 'customers'], function () {});
     Route::group(['prefix' => 'invoices'], function () {});
-    Route::group(['prefix' => 'stores'], function () {});
+    Route::group(['prefix' => 'stores'], function () {
+        Route::post('{store_id}/add-user', [StoreController::class, 'addUserToStore']);
+        Route::post('{store_id}/remove-user', [StoreController::class, 'removeUserStore']);
+    });
 });
 
 

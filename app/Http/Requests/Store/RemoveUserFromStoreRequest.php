@@ -23,7 +23,6 @@ class RemoveUserFromStoreRequest extends FormRequest
     {
         return [
             'email' => 'required|string|email|max:255',
-            'name' => 'required|string|max:255',
         ];
     }
 }

@@ -12,11 +12,15 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\StoreService;
 use Illuminate\Support\Facades\Log;
+use App\Traits\ApiResponser;
 
 
 class StoreController extends Controller
 {
 
+
+
+    use ApiResponser;
 
 
     public function addUserToStore(int $store_id, AddUserToStoreRequest $request)
@@ -40,7 +44,7 @@ class StoreController extends Controller
                 ]);
             }
 
-
+            $user->refresh();
 
             StoreService::addUserToStore(
                 $user->id,
@@ -72,14 +76,6 @@ class StoreController extends Controller
         try {
             $validated = $request->validated();
 
-            if (!isset($user)) {
-
-                $user = User::create([
-                    'email' => $validated['email'],
-                    'name' => $validated['name'],
-                ]);
-            }
-
 
             $user =  User::where('email', $validated['email'])->firstOrFail();
 
@@ -100,9 +96,7 @@ class StoreController extends Controller
              */
             return ApiResponse::validResponse(
                 'User removed from store',
-                [
-                    'user' =>  new UserResource($user),
-                ],
+                [],
                 200
             );
         } catch (\Exception $e) {

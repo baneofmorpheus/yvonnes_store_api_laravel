@@ -28,6 +28,8 @@ class UserFactory extends Factory
             'email' => fake()->email(),
             'provider_id' => Str::uuid(),
             'provider' => 'google',
+            'token' => Str::random(200),
+
         ];
     }
 }
