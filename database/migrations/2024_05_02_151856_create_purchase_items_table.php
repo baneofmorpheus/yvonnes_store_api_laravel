@@ -22,6 +22,9 @@ return new class extends Migration
             $table->unsignedBigInteger('unit_price');
             $table->unsignedBigInteger('item_total');
 
+            $table->foreignId('product_id')
+                ->constrained()
+                ->onDelete('cascade');
             $table->softDeletes();
 
             $table->timestamps();

@@ -21,7 +21,7 @@ class PurchaseResource extends JsonResource
             'store_id' => $this->store_id,
             'supplier' => $this->supplier,
             'total' => $this->total,
-            'items' => PurchaseItemResource::collection($this->items),
+            'items' => PurchaseItemResource::collection($this->purchaseItems),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

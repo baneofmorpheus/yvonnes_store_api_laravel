@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Organization;
+namespace App\Http\Controllers\Api\v1\Purchases;
 
 use App\Http\Controllers\Controller;
 use App\Traits\ApiResponser;
@@ -29,10 +29,10 @@ class PurchasesController extends Controller
             DB::beginTransaction();
 
             $purchase =  Purchase::create([
-                'store_id' => $validated_data['name'],
-                'supplier_id' => $validated_data['address'] ?? null,
+                'store_id' => $validated_data['store_id'],
+                'supplier_id' => $validated_data['supplier_id'],
                 'total' => collect($validated_data['items'])
-                    ->sum(fn($item) => $item['quantity'] * $item['unit_price'])
+                    ->sum(fn($item) => $item['quantity_purchased'] * $item['unit_price'])
             ]);
 
             foreach ($validated_data['items'] as $item) {
@@ -42,6 +42,7 @@ class PurchasesController extends Controller
                     'quantity_purchased' => $item['quantity_purchased'],
                     'quantity_available' => $item['quantity_purchased'],
                     'unit_price'         => $item['unit_price'],
+                    'item_total'         => $item['quantity_purchased'] * $item['unit_price'],
                 ]);
             }
 
@@ -101,18 +102,18 @@ class PurchasesController extends Controller
     }
 
 
-    public function getPurchase(int $purchase_id, int $store_id)
+    public function getPurchase(int $purchase_id)
     {
 
         try {
 
             $user = auth()->user();
+            $purchase = Purchase::where('id', $purchase_id)->firstOrFail();
 
-            if (!$user->storeBelongsToUser($store_id)) {
+            if (!$user->storeBelongsToUser($purchase->store_id)) {
                 return $this->errorResponse('Unauthorized', 403);
             }
 
-            $purchase = Purchase::where('id', $purchase_id)->where('store_id', $store_id)->firstOrFail();
 
             return $this->successResponse('Supplier retrieved', 200, [
                 'purchase' =>  new PurchaseResource($purchase)
@@ -121,25 +122,25 @@ class PurchasesController extends Controller
         } catch (\Exception $e) {
             Log::error("PurchasesController@getPurchase", [
                 "error" => $e->getMessage(),
-                'purchase_id' => $purchase_id,
-                'store_id' => $store_id
+                'payload' => request()->all()
+
             ]);
             return $this->errorResponse('An error occured', 500, [], $e->getMessage());
         }
     }
 
 
-    public function deletePurchase(int $purchase_id, int $store_id)
+    public function deletePurchase(int $purchase_id)
     {
         try {
 
             $user = auth()->user();
+            $purchase = Purchase::where('id', $purchase_id)->firstOrFail();
 
-            if (!$user->storeBelongsToUser($store_id)) {
+            if (!$user->storeBelongsToUser($purchase->store_id)) {
                 return $this->errorResponse('Unauthorized', 403);
             }
 
-            $purchase = Purchase::where('id', $purchase_id)->where('store_id', $store_id)->firstOrFail();
             foreach ($purchase->items as $item) {
 
                 if ($item->quantity_available !== $item->quantity_purchased) {

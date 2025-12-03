@@ -16,5 +16,6 @@ class Supplier extends Model
         'name',
         'phone_number',
         'address',
+        'store_id'
     ];
 }

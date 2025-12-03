@@ -22,6 +22,11 @@ class Purchase extends Model
     {
         return $this->belongsTo(Store::class);
     }
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
 
     public function purchaseItems(): HasMany
     {

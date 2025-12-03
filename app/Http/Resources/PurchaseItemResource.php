@@ -18,9 +18,10 @@ class PurchaseItemResource extends JsonResource
         return [
             'id' => $this->id,
             'quantity_purchased' => $this->quantity_purchased,
-            'quantity_remaining' => $this->quantity_remaining,
+            'quantity_available' => $this->quantity_available,
             'unit_price' => $this->unit_price,
-            'product' => ProductResource::collection($this->product),
+            'item_total' => $this->item_total,
+            'product' => new ProductResource($this->product),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
