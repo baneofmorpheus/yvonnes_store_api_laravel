@@ -10,6 +10,7 @@ use App\Models\Store;
 use App\Models\Supplier;
 use App\Models\StoreUser;
 use App\Models\Product;
+use App\Models\Purchase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Mockery;
@@ -104,63 +105,211 @@ class PurchaseTest extends TestCase
     }
 
 
-    public function test_remove_user_from_store(): void
+    public function test_get_purchases(): void
     {
-        Mail::fake();
-        Queue::fake();
 
-        $owner = User::factory()->create();
+
         $user = User::factory()->create();
         $store = Store::factory()->create(
-            ['user_id' => $owner->id]
+            ['user_id' => $user->id]
         );
-
 
         StoreUser::factory()->create([
             'user_id' => $user->id,
-            'store_id' => $store->id,
-            'role' => 'staff',
-            'is_default' => true,
-        ]);
-        StoreUser::factory()->create([
-            'user_id' => $owner->id,
             'store_id' => $store->id,
             'role' => 'owner',
             'is_default' => true,
         ]);
-        // Create a mock Socialite User instance
-        $socialiteUser = new SocialiteUser();
-        $socialiteUser->id = '123456789';
-        $socialiteUser->name = 'Joe Jake';
-        $socialiteUser->email = 'jake@gmail.com';
-        $socialiteUser->avatar = 'https://example.com/avatar.jpg';
+
+        $supplier = Supplier::factory()->create(['store_id' => $store->id]);
 
 
-        $provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
-        $provider->shouldReceive('userFromToken')
-            ->with('900000')
-            ->andReturn($socialiteUser);
-        Socialite::shouldReceive('driver')
-            ->with('google')
-            ->andReturn($provider);
+        Product::factory()->count(100)
+            ->create(['store_id' => $store->id]);
 
+
+        Purchase::factory()
+            ->count(100)
+            ->withItems(5)
+            ->create([
+                'supplier_id' => $supplier->id,
+                'store_id' => $store->id
+            ]);
 
         $response = $this->withHeaders([
-            'Authorization' => "Bearer $owner->token",
-        ])->postJson(
-            "/api/v1/stores/$store->id/remove-user",
+            'Authorization' => "Bearer $user->token",
+        ])->getJson(
+            "/api/v1/purchases/$store->id",
 
-            ['email' => $user->email]
         );
 
 
         $response->assertStatus(200)
-            ->assertJsonStructure(['data' => []]);
+            ->assertJsonStructure(['data' => [
+                'purchases' => [
+                    'items' => [
+                        '*' => [
+                            'id',
+                            'store_id',
+                            'supplier' => ['name'],
+                            'total',
+                            'items' => [
+                                '*' => [
+                                    'id',
+                                    'quantity_purchased',
+                                    'quantity_available',
+                                    'unit_price',
+                                    'product' => [
+                                        'name'
+                                    ],
+                                ]
+                            ]
+                        ]
+                    ],
+                    'meta' => [
+                        'current_page',
+                        'last_page',
+                        'per_page',
+                        'total'
+                    ]
+                ]
+            ]]);
+    }
+
+    public function test_get_single_purchase(): void
+    {
 
 
-        $this->assertDatabaseMissing('store_users', [
+        $user = User::factory()->create();
+        $store = Store::factory()->create(
+            ['user_id' => $user->id]
+        );
+
+        StoreUser::factory()->create([
             'user_id' => $user->id,
             'store_id' => $store->id,
+            'role' => 'owner',
+            'is_default' => true,
+        ]);
+
+        $db = DB::connection();
+
+        dump([
+            'APP_ENV'           => env('APP_ENV'),
+            'DB_CONNECTION'     => env('DB_CONNECTION'),
+            'DB_DATABASE'       => env('DB_DATABASE'),
+            'config.default'    => config('database.default'),
+            'config.driver'     => $db->getDriverName(),
+            'config.database'   => $db->getDatabaseName(),
+            'is_in_memory'      => $db->getDriverName() === 'sqlite'
+                && $db->getDatabaseName() === ':memory:',
+        ]);
+
+        $supplier = Supplier::factory()->create(['store_id' => $store->id]);
+
+
+        Product::factory()->count(100)
+            ->create(['store_id' => $store->id]);
+
+
+        Purchase::factory()
+            ->count(100)
+            ->withItems(5)
+            ->create([
+                'supplier_id' => $supplier->id,
+                'store_id' => $store->id
+            ]);
+
+        $purchase = Purchase::factory()
+            ->withItems(5)
+            ->create([
+                'supplier_id' => 1,
+                'store_id' => 1
+            ]);
+
+
+
+        // dd($purchase);
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer $user->token",
+        ])->getJson(
+            "/api/v1/purchases/$purchase->id/single",
+
+        );
+
+
+        $response->dump();
+        $response->assertStatus(200)
+            ->assertJsonStructure(['data' => [
+                'purchase' => [
+                    'id',
+                    'store_id',
+                    'supplier' => ['name'],
+                    'total',
+                    'items' => [
+                        '*' => [
+                            'id',
+                            'quantity_purchased',
+                            'quantity_available',
+                            'unit_price',
+                            'product' => [
+                                'name'
+                            ],
+                        ]
+                    ]
+
+                ]
+            ]]);
+    }
+
+    public function test_delete_purchase(): void
+    {
+
+
+        $user = User::factory()->create();
+        $store = Store::factory()->create(
+            ['user_id' => $user->id]
+        );
+
+        StoreUser::factory()->create([
+            'user_id' => $user->id,
+            'store_id' => $store->id,
+            'role' => 'owner',
+            'is_default' => true,
+        ]);
+
+        $supplier = Supplier::factory()->create(['store_id' => $store->id]);
+
+
+        Product::factory()->count(100)
+            ->create(['store_id' => $store->id]);
+
+
+
+        $purchase = Purchase::factory()
+            ->withItems(5)
+            ->create([
+                'supplier_id' => $supplier->id,
+                'store_id' => $store->id
+            ]);
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer $user->token",
+        ])->deleteJson(
+            "/api/v1/purchases/$purchase->id",
+
+        );
+
+
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([]);
+
+
+        $this->assertDatabaseMissing('purchases', [
+            'id' => $purchase->id,
+            'deleted_at' => null,
         ]);
     }
 }

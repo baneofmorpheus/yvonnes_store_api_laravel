@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Organization;
+namespace App\Http\Controllers\Api\v1\Suppliers;
 
 use App\Http\Controllers\Controller;
 use App\Traits\ApiResponser;
@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Supplier;
 use App\Http\Resources\SupplierResource;
+use App\Http\Resources\SupplierCollection;
 
 
 class SupplierController extends Controller
@@ -27,12 +28,7 @@ class SupplierController extends Controller
 
             DB::beginTransaction();
 
-            $supplier =  Supplier::create([
-                'name' => $validated_data['name'],
-                'address' => $validated_data['address'] ?? null,
-                'phone_number' => $validated_data['phone_number'] ?? null,
-                'user_id' => auth()->user()->id,
-            ]);
+            $supplier =  Supplier::create($validated_data);
 
             return $this->successResponse('Supplier created ', 201, [
                 'supplier' => new SupplierResource($supplier)
@@ -45,30 +41,22 @@ class SupplierController extends Controller
         }
     }
 
-    public function listSuppliers()
+    public function listSuppliers(int $store_id)
     {
 
         try {
 
 
 
-            $user = auth()->user();
 
+            if (!auth()->user()->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('You dont have  access to this store', 403);
+            }
 
             $perPage =  request('per_page') ?? 20;
 
-            $suppliers = Supplier::where('user_id', $user->id)
-                ->get()->orderBy('created_at', 'desc')->paginate($perPage);
-
-
-            $pagination = [
-                'current_page' => $suppliers->currentPage(),
-                'per_page' => $suppliers->perPage(),
-                'total' => $suppliers->total(),
-                'last_page' => $suppliers->lastPage(),
-                'from' => $suppliers->firstItem(),
-                'to' => $suppliers->lastItem(),
-            ];
+            $suppliers = Supplier::where('store_id', $store_id)
+                ->orderBy('created_at', 'desc')->paginate($perPage);
 
 
 
@@ -76,8 +64,7 @@ class SupplierController extends Controller
 
 
             return $this->successResponse('Supplier retrieved', 200, [
-                'suppliers' =>  $suppliers->items(),
-                'pagination' => $pagination
+                'suppliers' =>  new SupplierCollection($suppliers),
             ]);
         } catch (\Exception $e) {
             Log::error("SupplierController@listSuppliers", ["error" => $e->getMessage()]);
@@ -91,11 +78,13 @@ class SupplierController extends Controller
 
         try {
 
-            $user = auth()->user();
 
+            $supplier = Supplier::where('id', $supplier_id)->firstOrFail();
 
+            if (!auth()->user()->storeBelongsToUser($supplier->store_id)) {
+                return $this->errorResponse('You dont have  access to this store', 403);
+            }
 
-            $supplier = Supplier::where('id', $supplier_id)->where('user_id', $user->id)->firstOrFail();
 
             return $this->successResponse('Supplier retrieved', 200, [
                 'supplier' =>  new SupplierResource($supplier)
@@ -115,12 +104,17 @@ class SupplierController extends Controller
     {
         try {
 
-            $user = auth()->user();
 
             $validated_data = $request->validated();
 
             $supplier = Supplier::where('id', $supplier_id)
-                ->where('user_id' . $user->id)->update($validated_data);
+                ->firstOrFail();
+
+            if (!auth()->user()->storeBelongsToUser($supplier->store_id)) {
+                return $this->errorResponse('You dont have  access to this store', 403);
+            }
+
+            $supplier->update($validated_data);
 
             $supplier->refresh();
 
@@ -130,6 +124,29 @@ class SupplierController extends Controller
         } catch (\Exception $e) {
 
             Log::error("SupplierController@updateSupplier", ["error" => $e->getMessage(), 'supplier_id' => $supplier_id, 'payload' => request()->all()]);
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+    public function deleteSupplier(int $supplier_id)
+    {
+        try {
+
+
+            $supplier = Supplier::where('id', $supplier_id)
+                ->firstOrFail();
+
+
+            if (auth()->user()->getStoreRole($supplier->store_id) !== 'owner') {
+                return $this->errorResponse('You dont have owner access to this store', 403);
+            }
+            $supplier->delete();
+
+
+
+            return $this->successResponse('Supplier deleted', 200, []);
+        } catch (\Exception $e) {
+
+            Log::error("SupplierController@deleteSupplier", ["error" => $e->getMessage(), 'supplier_id' => $supplier_id, 'payload' => request()->all()]);
             return $this->errorResponse('An error occured', 500, [], $e->getMessage());
         }
     }

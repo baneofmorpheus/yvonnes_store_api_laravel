@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
+use App\Http\Resources\PurchaseCollection;
 use App\Http\Resources\PurchaseResource;
 
 
@@ -73,18 +74,13 @@ class PurchasesController extends Controller
 
             $perPage =  request('per_page') ?? 20;
 
-            $suppliers = Purchase::where('store_id', $store_id)
-                ->get()->orderBy('created_at', 'desc')->paginate($perPage);
 
 
-            $pagination = [
-                'current_page' => $suppliers->currentPage(),
-                'per_page' => $suppliers->perPage(),
-                'total' => $suppliers->total(),
-                'last_page' => $suppliers->lastPage(),
-                'from' => $suppliers->firstItem(),
-                'to' => $suppliers->lastItem(),
-            ];
+            $purchases = Purchase::where('store_id', $store_id)
+                ->orderBy('created_at', 'desc')->paginate($perPage);
+
+
+
 
 
 
@@ -92,8 +88,8 @@ class PurchasesController extends Controller
 
 
             return $this->successResponse('Purchases retrieved', 200, [
-                'purchases' =>  $suppliers->items(),
-                'pagination' => $pagination
+                'purchases' =>  new PurchaseCollection($purchases),
+
             ]);
         } catch (\Exception $e) {
             Log::error("PurchasesController@getPurchases", ["error" => $e->getMessage()]);
@@ -102,7 +98,7 @@ class PurchasesController extends Controller
     }
 
 
-    public function getPurchase(int $purchase_id)
+    public function getSinglePurchase(int $purchase_id)
     {
 
         try {
@@ -141,7 +137,8 @@ class PurchasesController extends Controller
                 return $this->errorResponse('Unauthorized', 403);
             }
 
-            foreach ($purchase->items as $item) {
+
+            foreach ($purchase->purchaseItems as $item) {
 
                 if ($item->quantity_available !== $item->quantity_purchased) {
                     return $this->errorResponse('Cannot delete purchase with sold items', 400);

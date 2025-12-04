@@ -21,13 +21,15 @@ class PurchaseItemFactory extends Factory
      */
     public function definition(): array
     {
+
+        $quantity = fake()->numberBetween(30, 40);
         return [
-            'store_id' => Store::get()->random()->id,
-            'purchase_id' => Product::factory()->create(),
-            'product_id' => Purchase::factory()->create(),
-            'quantity_purchased' => fake()->numberBetween(30, 40),
-            'quantity_available' => fake()->numberBetween(20, 40),
-            'unit_price' => fake()->numberBetween(1000, 3000)
+            'purchase_id' => Purchase::factory()->create(),
+            'product_id' => Product::factory()->create(),
+            'quantity_purchased' => $quantity,
+            'quantity_available' => $quantity,
+            'unit_price' => fake()->numberBetween(1000, 3000),
+            'item_total' => fake()->numberBetween(2000, 400000)
         ];
     }
 }

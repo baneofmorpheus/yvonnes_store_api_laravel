@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\Auth\AuthController;
 use App\Http\Controllers\Api\v1\Purchases\PurchasesController;
 use App\Http\Controllers\Api\v1\Stores\StoreController;
+use App\Http\Controllers\Api\v1\Suppliers\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,9 +39,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:api', 'throttle:api']], f
 
     Route::group(['prefix' => 'purchases'], function () {
         Route::post('{store_id}', [PurchasesController::class, 'createPurchase']);
-        Route::get('{store_id}', [StoreController::class, 'getPurchases']);
-        Route::get('{purchase_id}/single', [StoreController::class, 'getPurchase']);
-        Route::delete('{purchase_id}', [StoreController::class, 'deletePurchase']);
+        Route::get('{store_id}', [PurchasesController::class, 'getPurchases']);
+        Route::get('{purchase_id}/single', [PurchasesController::class, 'getSinglePurchase']);
+        Route::delete('{purchase_id}', [PurchasesController::class, 'deletePurchase']);
+    });
+
+    Route::group(['prefix' => 'suppliers'], function () {
+        Route::post('', [SupplierController::class, 'createSupplier']);
+        Route::get('{store_id}', [SupplierController::class, 'listSuppliers']);
+        Route::get('{supplier_id}/single', [SupplierController::class, 'getSupplier']);
+        Route::post('{supplier_id}', [SupplierController::class, 'updateSupplier']);
+        Route::delete('{supplier_id}', [SupplierController::class, 'deleteSupplier']);
     });
 });
 

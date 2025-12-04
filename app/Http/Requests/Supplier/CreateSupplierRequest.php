@@ -28,6 +28,8 @@ class CreateSupplierRequest extends FormRequest
             'name' => ['string', 'required'],
             'address' => ['string'],
             'phone_number' => ['string'],
+            'store_id' => ['integer', 'required', 'exists:stores,id'],
+
         ];
     }
 }

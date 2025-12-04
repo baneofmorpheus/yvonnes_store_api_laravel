@@ -24,6 +24,7 @@ class User extends Authenticatable
         'provider_name',
         'is_active',
 
+
     ];
 
     /**
@@ -51,7 +52,7 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
-    public function storeBelongsToUser(int $store_id): HasMany
+    public function storeBelongsToUser(int $store_id): bool
     {
 
         return  StoreUser::where('id', $store_id)

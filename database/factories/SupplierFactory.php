@@ -25,6 +25,8 @@ class SupplierFactory extends Factory
         return [
             'name' => fake()->name(),
             'store_id' => Store::factory(),
+            'address' => fake()->address(),
+            'phone_number' => fake()->phoneNumber(),
         ];
     }
 }
