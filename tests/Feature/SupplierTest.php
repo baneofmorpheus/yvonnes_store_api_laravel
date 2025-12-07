@@ -190,4 +190,54 @@ class SupplierTest extends TestCase
                 ]
             ]]);
     }
+
+
+
+    public function test_update_seller(): void
+    {
+
+        $user = User::factory()->create();
+        $store = Store::factory()->create(
+            ['user_id' => $user->id]
+        );
+
+        StoreUser::factory()->create([
+            'user_id' => $user->id,
+            'store_id' => $store->id,
+            'role' => 'staff',
+            'is_default' => true,
+        ]);
+        $seller =    Supplier::factory()->create([
+            'store_id' => $store->id
+        ]);
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer $user->token",
+        ])->postJson(
+            "/api/v1/suppliers/{$seller->id}",
+            [
+                'address' => '10 Joe roads',
+                'phone_number' => '080123456783',
+                'name' => 'Joe king3',
+            ]
+        );
+
+
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['data' => [
+                'supplier' => [
+                    'name',
+                    'phone_number',
+                    'address'
+                ]
+            ]]);
+
+        $this->assertDatabaseHas('suppliers', [
+            'address' => '10 Joe roads',
+            'phone_number' => '080123456783',
+            'name' => 'Joe king3',
+            'id' => $seller->id
+        ]);
+    }
 }

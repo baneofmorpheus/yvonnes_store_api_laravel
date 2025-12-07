@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1\Suppliers;
 use App\Http\Controllers\Controller;
 use App\Traits\ApiResponser;
 use App\Http\Requests\Supplier\CreateSupplierRequest;
+use App\Http\Requests\Supplier\UpdateSupplierRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Supplier;
@@ -100,7 +101,7 @@ class SupplierController extends Controller
     }
 
 
-    public function updateSupplier(int $supplier_id,  CreateSupplierRequest $request)
+    public function updateSupplier(int $supplier_id,  UpdateSupplierRequest $request)
     {
         try {
 

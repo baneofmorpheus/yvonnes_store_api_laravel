@@ -25,8 +25,9 @@ class CustomerFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'company' => fake()->company(),
-            'notes' => fake()->paragraphs(2, true),
+            'store_id' => Store::factory(),
+            'address' => fake()->address(),
+            'phone_number' => fake()->phoneNumber(),
 
         ];
     }

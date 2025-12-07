@@ -11,6 +11,14 @@ class Customer extends Model
 {
     use HasFactory, SoftDeletes;
 
+
+
+    protected $fillable = [
+        'name',
+        'store_id',
+        'address',
+        'phone_number',
+    ];
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class);

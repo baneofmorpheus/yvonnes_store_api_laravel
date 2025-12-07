@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\v1\Auth\AuthController;
 use App\Http\Controllers\Api\v1\Purchases\PurchasesController;
 use App\Http\Controllers\Api\v1\Stores\StoreController;
 use App\Http\Controllers\Api\v1\Suppliers\SupplierController;
+use App\Http\Controllers\Api\v1\Customers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,14 @@ use App\Http\Controllers\Api\v1\Suppliers\SupplierController;
 
 
 Route::group(['prefix' => 'v1', 'middleware' => ['auth:api', 'throttle:api']], function () {
-    Route::group(['prefix' => 'customers'], function () {});
+    Route::group(['prefix' => 'customers'], function () {
+
+        Route::post('', [CustomerController::class, 'createCustomer']);
+        Route::get('{store_id}', [CustomerController::class, 'listCustomers']);
+        Route::get('{customer_id}/single', [CustomerController::class, 'getCustomer']);
+        Route::post('{customer_id}', [CustomerController::class, 'updateCustomer']);
+        Route::delete('{customer_id}', [CustomerController::class, 'deleteCustomer']);
+    });
     Route::group(['prefix' => 'invoices'], function () {});
 
 
