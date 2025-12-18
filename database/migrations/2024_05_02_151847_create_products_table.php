@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('sku')->unique();
             $table->string('image_url')->nullable();
             $table->string('unit');
+            $table->integer('quantity_remaining');
             $table->unsignedBigInteger('unit_price');
 
             $table->softDeletes();

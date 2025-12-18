@@ -27,6 +27,7 @@ class ProductFactory extends Factory
             'sku' => Str::random(7),
             'unit' => fake()->word(),
             'image_url' => fake()->imageUrl(),
+            'quantity_remaining' => fake()->numberBetween(10, 100),
 
         ];
     }

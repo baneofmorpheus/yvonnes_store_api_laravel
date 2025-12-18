@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
+use App\Models\Product;
+use App\Models\ProductMovement;
 use App\Http\Resources\PurchaseCollection;
 use App\Http\Resources\PurchaseResource;
 
@@ -37,6 +39,8 @@ class PurchasesController extends Controller
             ]);
 
             foreach ($validated_data['items'] as $item) {
+
+                $product = Product::find($item['product_id']);
                 PurchaseItem::create([
                     'purchase_id'        => $purchase->id,
                     'product_id'         => $item['product_id'],
@@ -45,6 +49,20 @@ class PurchasesController extends Controller
                     'unit_price'         => $item['unit_price'],
                     'item_total'         => $item['quantity_purchased'] * $item['unit_price'],
                 ]);
+
+                ProductMovement::create([
+
+                    'product_id' => $product->id,
+                    'type' => 'purchase',
+                    'stock_before' => $product->quantity_remaining,
+                    'quantity_change' => $item['quantity_purchased'],
+                    'stock_after' => $product->quantity_remaining + $item['quantity_purchased'],
+                    'purchase_id' => $purchase->id,
+                    'user_id' => auth()->user()->id,
+
+                ]);
+
+                $product->update(['quanity_remaining' => $product->quantity_remaining + $item['quantity_purchased']]);
             }
 
             $purchase->refresh();
@@ -139,10 +157,27 @@ class PurchasesController extends Controller
 
 
             foreach ($purchase->purchaseItems as $item) {
+                $product = Product::find($item['product_id']);
 
                 if ($item->quantity_available !== $item->quantity_purchased) {
                     return $this->errorResponse('Cannot delete purchase with sold items', 400);
                 }
+
+                ProductMovement::create([
+
+                    'product_id' => $product->id,
+                    'quantity_change' => $item['quantity_purchased'],
+
+                    'type' => 'purchase_return',
+                    'stock_before' => $product->quantity_remaining,
+                    'stock_after' => $product->quantity_remaining - $item['quantity_purchased'],
+                    'purchase_id' => $purchase->id,
+                    'user_id' => auth()->user()->id,
+
+                ]);
+
+
+                $product->update(['quanity_remaining' => $product->quantity_remaining - $item['quantity_purchased']]);
             }
 
             $purchase->delete();

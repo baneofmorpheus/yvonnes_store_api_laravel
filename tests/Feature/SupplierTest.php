@@ -45,7 +45,6 @@ class SupplierTest extends TestCase
         );
 
 
-        $response->dump();
 
 
         $response->assertStatus(201)

@@ -13,14 +13,13 @@ use App\Models\Product;
 use App\Models\Purchase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
-use Mockery;
 use Illuminate\Support\Facades\DB;
 
-class PurchaseTest extends TestCase
+class InvoiceTest extends TestCase
 {
 
 
-    public function test_create_purchases(): void
+    public function test_create_invoice(): void
     {
 
 
@@ -70,7 +69,6 @@ class PurchaseTest extends TestCase
         );
 
 
-
         $response->assertStatus(201)
             ->assertJsonStructure(['data' => [
                 'purchase' => [
@@ -106,7 +104,7 @@ class PurchaseTest extends TestCase
     }
 
 
-    public function test_get_purchases(): void
+    public function test_get_invoices(): void
     {
 
 
@@ -177,7 +175,7 @@ class PurchaseTest extends TestCase
             ]]);
     }
 
-    public function test_get_single_purchase(): void
+    public function test_get_single_invoice(): void
     {
 
 
@@ -262,7 +260,7 @@ class PurchaseTest extends TestCase
             ]]);
     }
 
-    public function test_delete_purchase(): void
+    public function test_delete_invoice(): void
     {
 
 

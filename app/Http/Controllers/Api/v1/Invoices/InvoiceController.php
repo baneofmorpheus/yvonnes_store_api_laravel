@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Product;
+use App\Models\PurchaseItem;
+use App\Models\ProductMovement;
+
+use App\Services\InvoiceService;
 
 class InvoiceController extends Controller
 {
@@ -49,10 +53,14 @@ class InvoiceController extends Controller
 
             foreach ($validated_data['items'] as $item) {
 
+
+
                 $product = Product::findOrFail($item['product_id']);
                 if ($product->quantity_remaining < $item['quantity_purchased']) {
                     return $this->errorResponse('Insufficient stock for product: ' . $product->name, 400, []);
                 }
+
+
                 InvoiceItem::create([
                     'invoice_id'        => $invoice->id,
                     'product_id'         => $item['product_id'],
@@ -60,6 +68,8 @@ class InvoiceController extends Controller
                     'unit_price'         => $item['unit_price'],
                     'item_total'         => $item['quantity_purchased'] * $item['unit_price'],
                 ]);
+
+                InvoiceService::updateSalePurchaseRecords($invoice->id, $product->id, $item['quantity_purchased']);
             }
 
             $invoice->refresh();
@@ -147,6 +157,11 @@ class InvoiceController extends Controller
 
             $invoice = Invoice::where('id', $invoice_id)
                 ->where('store_id', $store_id)->firstOrFail();
+
+            InvoiceService::updateSaleReturnPurchaseRecords($invoice->id);
+
+
+
 
             $invoice->delete();
 
