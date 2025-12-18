@@ -3,13 +3,15 @@
 
 namespace App\Http\Controllers\Api\v1\Stores;
 
-use  App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests\Store\AddUserToStoreRequest;
 use App\Http\Requests\Store\RemoveUserFromStoreRequest;
+use App\Http\Requests\Store\UpdateStoreRequest;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\StoreResource;
 use App\Models\User;
+use App\Models\Store;
 use App\Services\StoreService;
 use Illuminate\Support\Facades\Log;
 use App\Traits\ApiResponser;
@@ -55,12 +57,13 @@ class StoreController extends Controller
             /**
              * If default store is empty then this is a new user
              */
-            return ApiResponse::validResponse(
+            return $this->successResponse(
                 'User added to store successfully',
+                201,
+
                 [
                     'user' =>  new UserResource($user),
                 ],
-                201
             );
         } catch (\Exception $e) {
             Log::error("StoreController@addUserToStore", [
@@ -68,8 +71,59 @@ class StoreController extends Controller
                 "file" => $e->getFile(),
                 "line" => $e->getLine(),
             ]);
+
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
         }
     }
+
+
+    public function updateStore(int $store_id, UpdateStoreRequest $request)
+    {
+
+        try {
+            $validated = $request->validated();
+
+            if (auth()->user()->getStoreRole($store_id) !== 'owner') {
+                return $this->errorResponse('You dont have owner access to this store', 403);
+            }
+
+
+
+            $store =   Store::where('id', $store_id)->where('user_id', auth()->user()->id)
+                ->firstorFail();
+
+            $store->update([
+                'name' => $validated['name']
+            ]);
+
+            $store->refresh();
+
+
+            /**
+             * If default store is empty then this is a new user
+             */
+            return $this->successResponse(
+                'Store updated successfully',
+                200,
+
+                [
+                    'store' =>  new StoreResource($store),
+                ],
+            );
+        } catch (\Exception $e) {
+            dd($e);
+            Log::error("StoreController@addUserToStore", [
+                "message" => $e->getMessage(),
+                "file" => $e->getFile(),
+                "line" => $e->getLine(),
+            ]);
+
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+
+
+
     public function removeUserStore(int $store_id, RemoveUserFromStoreRequest $request)
     {
 
@@ -94,10 +148,11 @@ class StoreController extends Controller
             /**
              * If default store is empty then this is a new user
              */
-            return ApiResponse::validResponse(
+            return $this->successResponse(
                 'User removed from store',
+                200,
+
                 [],
-                200
             );
         } catch (\Exception $e) {
             Log::error("StoreController@removeUserStore", [
@@ -105,6 +160,8 @@ class StoreController extends Controller
                 "file" => $e->getFile(),
                 "line" => $e->getLine(),
             ]);
+
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
         }
     }
 }

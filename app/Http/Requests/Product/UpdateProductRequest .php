@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Store;
+namespace App\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateStoreRequest extends FormRequest
+class UpdateProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,9 @@ class CreateStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'token' => 'required|string|max:50|in:book_in,book_out',
-            'login_type' => 'required|string|max:10|in:google,apple',
+            'image_url' => 'string|max:255',
+            'unit' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
         ];
     }
 }

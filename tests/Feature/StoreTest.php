@@ -84,6 +84,56 @@ class StoreTest extends TestCase
     }
 
 
+
+    public function test_update_store(): void
+    {
+        Mail::fake();
+        Queue::fake();
+
+        $owner = User::factory()->create();
+        $user = User::factory()->create();
+        $store = Store::factory()->create(
+            ['user_id' => $owner->id]
+        );
+
+
+        StoreUser::factory()->create([
+            'user_id' => $user->id,
+            'store_id' => $store->id,
+            'role' => 'staff',
+            'is_default' => true,
+        ]);
+        StoreUser::factory()->create([
+            'user_id' => $owner->id,
+            'store_id' => $store->id,
+            'role' => 'owner',
+            'is_default' => true,
+        ]);
+
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer $owner->token",
+        ])->postJson(
+            "/api/v1/stores/$store->id",
+
+            ['name' => 'Store King']
+        );
+
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['data' => ['store' => [
+                'id',
+                'name',
+            ]]]);
+
+
+
+        $this->assertDatabaseHas('stores', [
+            'id' => $store->id,
+            'name' =>  'Store King',
+        ]);
+    }
+
     public function test_remove_user_from_store(): void
     {
         Mail::fake();
