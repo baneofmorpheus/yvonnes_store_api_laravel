@@ -4,14 +4,11 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
-use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Two\User as SocialiteUser;
 use App\Models\Store;
 use App\Models\Product;
 use App\Models\StoreUser;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
-use Mockery;
 
 class ProductTest extends TestCase
 {
