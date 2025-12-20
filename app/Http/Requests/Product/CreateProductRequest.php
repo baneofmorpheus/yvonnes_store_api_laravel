@@ -25,6 +25,7 @@ class CreateProductRequest extends FormRequest
             'store_id' => ['integer', 'required', 'exists:stores,id'],
             'image_url' => 'string|max:255',
             'unit' => 'required|string|max:255',
+            'unit_price' => 'required|integer|min:1',
             'name' => 'required|string|max:255',
         ];
     }

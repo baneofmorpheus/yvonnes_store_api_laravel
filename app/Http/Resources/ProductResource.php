@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
             'store_id' => $this->store_id,
             'unit' => $this->unit,
             'quantity_remaining' => $this->quantity_remaining,
+            'unit_price' => $this->unit_price,
             'image_url' => $this->image_url,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

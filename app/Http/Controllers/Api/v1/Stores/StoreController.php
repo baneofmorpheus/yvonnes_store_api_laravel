@@ -111,7 +111,6 @@ class StoreController extends Controller
                 ],
             );
         } catch (\Exception $e) {
-            dd($e);
             Log::error("StoreController@addUserToStore", [
                 "message" => $e->getMessage(),
                 "file" => $e->getFile(),

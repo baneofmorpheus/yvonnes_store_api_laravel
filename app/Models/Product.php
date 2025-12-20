@@ -16,6 +16,7 @@ class Product extends Model
         'sku',
         'store_id',
         'image_url',
+        'unit_price',
         'unit',
         'quantity_remaining'
     ];

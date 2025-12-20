@@ -24,6 +24,7 @@ class UpdateProductRequest extends FormRequest
         return [
             'image_url' => 'string|max:255',
             'unit' => 'required|string|max:255',
+            'unit_price' => 'required|integer|min:1',
             'name' => 'required|string|max:255',
         ];
     }

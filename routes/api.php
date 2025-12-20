@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\v1\Auth\AuthController;
 use App\Http\Controllers\Api\v1\Purchases\PurchasesController;
 use App\Http\Controllers\Api\v1\Stores\StoreController;
 use App\Http\Controllers\Api\v1\Suppliers\SupplierController;
+use App\Http\Controllers\Api\v1\Products\ProductController;
 use App\Http\Controllers\Api\v1\Customers\CustomerController;
 
 /*
@@ -52,6 +53,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:api', 'throttle:api']], f
         Route::get('{store_id}', [PurchasesController::class, 'getPurchases']);
         Route::get('{purchase_id}/single', [PurchasesController::class, 'getSinglePurchase']);
         Route::delete('{purchase_id}', [PurchasesController::class, 'deletePurchase']);
+    });
+    Route::group(['prefix' => 'products'], function () {
+        Route::get('{store_id}', [ProductController::class, 'listProducts']);
+        Route::get('{product_id}', [ProductController::class, 'getProduct']);
+        Route::post('', [ProductController::class, 'createProduct']);
+        Route::post('{product_id}', [ProductController::class, 'updateProduct']);
+        Route::delete('{product_id}', [ProductController::class, 'deleteProduct']);
     });
 
     Route::group(['prefix' => 'suppliers'], function () {
