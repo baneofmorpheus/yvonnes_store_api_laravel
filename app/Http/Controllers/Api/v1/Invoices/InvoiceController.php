@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Organization;
+namespace App\Http\Controllers\Api\v1\Invoices;
 
 use App\Http\Controllers\Controller;
 use App\Traits\ApiResponser;
@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Product;
-use App\Models\PurchaseItem;
-use App\Models\ProductMovement;
 
 use App\Services\InvoiceService;
 

@@ -23,6 +23,8 @@ class User extends Authenticatable
         'provider_id',
         'provider_name',
         'is_active',
+        'token',
+        'token_expires_at'
 
 
     ];

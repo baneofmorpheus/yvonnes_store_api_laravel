@@ -64,7 +64,7 @@ class AuthController extends Controller
 
                 ] : []),
                 'token' => UtilityService::generateUniqueId(User::class, 'token'),
-                'token_expires_at' => Carbon::now()->addYear()
+                'token_expires_at' => Carbon::now()->addMonth()
             ]);
 
             $default_store_user = StoreService::getDefaultStoreUser($user->id);
@@ -77,9 +77,9 @@ class AuthController extends Controller
 
             return $this->successResponse('Login successful', 200, [
 
-                'token' => $user->token,
                 'default_store' =>  new StoreResource($default_store_user->store),
                 'role' =>  $default_store_user->role,
+                'token' =>   $user->token,
 
                 'user' => new UserResource($user)
             ]);

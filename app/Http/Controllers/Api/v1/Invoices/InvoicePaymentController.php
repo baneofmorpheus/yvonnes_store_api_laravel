@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Organization;
+namespace App\Http\Controllers\Api\v1\Invoices;
 
 use App\Http\Controllers\Controller;
 use App\Traits\ApiResponser;
