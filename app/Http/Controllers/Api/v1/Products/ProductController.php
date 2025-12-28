@@ -115,7 +115,7 @@ class ProductController extends Controller
             if (!auth()->user()->storeBelongsToUser($store_id)) {
                 return $this->errorResponse('You dont have  access to this store', 403);
             }
-            $perPage =  request('per_page') ?? 20;
+            $perPage = (int) request('per_page') ?? 20;
 
             $products = Product::where('store_id', $store_id)
                 ->orderBy('created_at', 'desc')->paginate($perPage);

@@ -90,7 +90,8 @@ class PurchasesController extends Controller
                 return $this->errorResponse('Unauthorized', 403);
             }
 
-            $perPage =  request('per_page') ?? 20;
+            $perPage = (int) request('per_page') ?? 20;
+
 
 
 

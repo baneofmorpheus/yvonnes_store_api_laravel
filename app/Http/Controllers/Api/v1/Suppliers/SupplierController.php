@@ -54,7 +54,8 @@ class SupplierController extends Controller
                 return $this->errorResponse('You dont have  access to this store', 403);
             }
 
-            $perPage =  request('per_page') ?? 20;
+            $perPage = (int) request('per_page') ?? 20;
+
 
             $suppliers = Supplier::where('store_id', $store_id)
                 ->orderBy('created_at', 'desc')->paginate($perPage);

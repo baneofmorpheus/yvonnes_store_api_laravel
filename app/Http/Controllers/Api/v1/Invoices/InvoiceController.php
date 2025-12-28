@@ -95,7 +95,8 @@ class InvoiceController extends Controller
                 return $this->errorResponse('Unauthorized', 403);
             }
 
-            $perPage =  request('per_page') ?? 20;
+            $perPage = (int) request('per_page') ?? 20;
+
 
             $invoices = Invoice::where('store_id', $store_id)
                 ->orderBy('created_at', 'desc')->paginate($perPage);

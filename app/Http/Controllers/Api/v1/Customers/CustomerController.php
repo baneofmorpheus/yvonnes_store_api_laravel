@@ -55,7 +55,8 @@ class CustomerController extends Controller
             $user = auth()->user();
 
 
-            $perPage =  request('per_page') ?? 20;
+            $perPage = (int) request('per_page') ?? 20;
+
 
             $customers = Customer::where('store_id', $store_id)
                 ->orderBy('created_at', 'desc')->paginate($perPage);

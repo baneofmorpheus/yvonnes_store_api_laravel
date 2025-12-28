@@ -30,13 +30,4 @@ class StoreFactory extends Factory
             'user_id' => User::factory(),
         ];
     }
-
-    // public function configure(): static
-    // {
-    //     return $this->afterCreating(function (Store $store) {
-    //         Customer::factory()->for($store)->count(100)->create();
-    //         Product::factory()->for($store)->count(100)->create();
-    //         // ...
-    //     });
-    // }
 }
