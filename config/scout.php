@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Invoice;
+use App\Models\Product;
 
 
 return [
@@ -147,6 +148,11 @@ return [
             Invoice::class => [
                 'searchableAttributes' => ['code', 'status',],
                 'filterableAttributes' => ['customer_id', 'status'],
+                'sortableAttributes' => ['created_at'],
+            ],
+            Product::class => [
+                'searchableAttributes' => ['name', 'unit',],
+                'filterableAttributes' => ['store_id',],
                 'sortableAttributes' => ['created_at'],
             ],
         ],

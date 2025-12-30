@@ -93,7 +93,7 @@ class ProductController extends Controller
 
 
             return $this->successResponse('Product retrieved', 200, [
-                'supplier' =>  new ProductResource($product)
+                'product' =>  new ProductResource($product)
 
             ]);
         } catch (\Exception $e) {
@@ -118,7 +118,7 @@ class ProductController extends Controller
             $perPage = (int) request('per_page') ?? 20;
 
             $products = Product::where('store_id', $store_id)
-                ->orderBy('created_at', 'desc')->paginate($perPage);
+                ->orderBy('name', 'asc')->paginate($perPage);
 
 
 
@@ -132,6 +132,46 @@ class ProductController extends Controller
                 "error" => $e->getMessage(),
                 'store_id' => $store_id
             ]);
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+
+
+
+    public function searchProducts(int $store_id)
+    {
+
+        try {
+
+
+
+
+
+            if (!auth()->user()->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('You dont have  access to this store', 403);
+            }
+
+
+
+
+            $products = Product::search(
+                request('query') ?? '',
+                function ($meilsearch, string $query, array $options) {
+                    $options['attributesToHighlight'] =  ['name', 'unit'];
+                    return $meilsearch->search($query, $options);
+                }
+            )->where('store_id', $store_id)
+
+                ->orderBy('created_at', 'desc')->get();
+
+
+
+
+            return $this->successResponse('Feedback retrieved', 200, [
+                'products' =>  ProductResource::collection($products),
+            ]);
+        } catch (\Exception $e) {
+            Log::error("ProductController@searchProducts", ["error" => $e->getMessage(), 'query' =>    request('query')]);
             return $this->errorResponse('An error occured', 500, [], $e->getMessage());
         }
     }

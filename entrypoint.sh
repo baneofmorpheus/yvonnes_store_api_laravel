@@ -19,6 +19,7 @@ php artisan config:clear
 #scout setup
 php artisan scout:sync-index-settings
 php artisan scout:import "App\Models\Invoice"
+php artisan scout:import "App\Models\Product"
 
 php-fpm &
 nginx -g 'daemon off;'
