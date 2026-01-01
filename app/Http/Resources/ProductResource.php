@@ -14,6 +14,13 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+        $scout_data = $this->scoutMetadata();
+        if (isset($scout_data) && isset($scout_data['_formatted'])) {
+            $scout_data = $scout_data['_formatted'];
+        }
+
+
         return [
 
             'id' => $this->id,
@@ -26,6 +33,8 @@ class ProductResource extends JsonResource
             'image_url' => $this->image_url,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            '_formatted' => $scout_data
+
         ];
     }
 }

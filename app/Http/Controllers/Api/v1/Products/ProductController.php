@@ -167,7 +167,7 @@ class ProductController extends Controller
 
 
 
-            return $this->successResponse('Feedback retrieved', 200, [
+            return $this->successResponse('Searched Products retrieved', 200, [
                 'products' =>  ProductResource::collection($products),
             ]);
         } catch (\Exception $e) {

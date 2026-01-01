@@ -2,6 +2,8 @@
 
 use App\Models\Invoice;
 use App\Models\Product;
+use App\Models\Customer;
+use App\Models\Supplier;
 
 
 return [
@@ -152,6 +154,16 @@ return [
             ],
             Product::class => [
                 'searchableAttributes' => ['name', 'unit',],
+                'filterableAttributes' => ['store_id',],
+                'sortableAttributes' => ['created_at'],
+            ],
+            Customer::class => [
+                'searchableAttributes' => ['name', 'phone_number',],
+                'filterableAttributes' => ['store_id'],
+                'sortableAttributes' => ['created_at'],
+            ],
+            Supplier::class => [
+                'searchableAttributes' => ['name',],
                 'filterableAttributes' => ['store_id',],
                 'sortableAttributes' => ['created_at'],
             ],

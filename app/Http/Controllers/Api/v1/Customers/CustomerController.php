@@ -44,6 +44,48 @@ class CustomerController extends Controller
         }
     }
 
+
+
+    public function searchCustomers(int $store_id)
+    {
+
+        try {
+
+
+
+
+
+            if (!auth()->user()->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('You dont have  access to this store', 403);
+            }
+
+
+
+
+            $customers = Customer::search(
+                request('query') ?? '',
+                function ($meilsearch, string $query, array $options) {
+                    $options['attributesToHighlight'] =  ['name', 'phone_number'];
+                    return $meilsearch->search($query, $options);
+                }
+            )->where('store_id', $store_id)
+
+                ->orderBy('created_at', 'desc')->get();
+
+
+
+
+            return $this->successResponse('Searched Customers retrieved', 200, [
+                'customers' =>  CustomerResource::collection($customers),
+            ]);
+        } catch (\Exception $e) {
+            Log::error("CustomerController@searchCustomers", ["error" => $e->getMessage(), 'query' =>    request('query')]);
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+
+
+
     public function listCustomers(int $store_id)
     {
 
@@ -52,14 +94,13 @@ class CustomerController extends Controller
             if (!auth()->user()->storeBelongsToUser($store_id)) {
                 return $this->errorResponse('You dont have  access to this store', 403);
             }
-            $user = auth()->user();
 
 
             $perPage = (int) request('per_page') ?? 20;
 
 
             $customers = Customer::where('store_id', $store_id)
-                ->orderBy('created_at', 'desc')->paginate($perPage);
+                ->orderBy('created_at', 'asc')->paginate($perPage);
 
 
 

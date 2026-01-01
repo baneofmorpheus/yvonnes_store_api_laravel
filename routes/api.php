@@ -33,6 +33,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:api', 'throttle:api']], f
 
         Route::post('', [CustomerController::class, 'createCustomer']);
         Route::get('{store_id}', [CustomerController::class, 'listCustomers']);
+        Route::get('{store_id}/search', [CustomerController::class, 'searchCustomers']);
+
         Route::get('{customer_id}/single', [CustomerController::class, 'getCustomer']);
         Route::post('{customer_id}', [CustomerController::class, 'updateCustomer']);
         Route::delete('{customer_id}', [CustomerController::class, 'deleteCustomer']);
@@ -56,6 +58,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:api', 'throttle:api']], f
     });
     Route::group(['prefix' => 'products'], function () {
         Route::get('{store_id}', [ProductController::class, 'listProducts']);
+        Route::get('{store_id}/search', [ProductController::class, 'searchProducts']);
         Route::get('{product_id}/single', [ProductController::class, 'getProduct']);
         Route::post('', [ProductController::class, 'createProduct']);
         Route::post('{product_id}', [ProductController::class, 'updateProduct']);
