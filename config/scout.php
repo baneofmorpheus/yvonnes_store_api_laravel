@@ -148,7 +148,7 @@ return [
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
             Invoice::class => [
-                'searchableAttributes' => ['code', 'status',],
+                'searchableAttributes' => ['code', 'status'],
                 'filterableAttributes' => ['customer_id', 'status'],
                 'sortableAttributes' => ['created_at'],
             ],
@@ -158,12 +158,12 @@ return [
                 'sortableAttributes' => ['created_at'],
             ],
             Customer::class => [
-                'searchableAttributes' => ['name', 'phone_number',],
+                'searchableAttributes' => ['name', 'phone_number'],
                 'filterableAttributes' => ['store_id'],
                 'sortableAttributes' => ['created_at'],
             ],
             Supplier::class => [
-                'searchableAttributes' => ['name',],
+                'searchableAttributes' => ['name', 'phone_number'],
                 'filterableAttributes' => ['store_id',],
                 'sortableAttributes' => ['created_at'],
             ],

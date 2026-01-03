@@ -42,6 +42,48 @@ class SupplierController extends Controller
         }
     }
 
+
+    public function searchSuppliers(int $store_id)
+    {
+
+        try {
+
+
+
+
+
+            if (!auth()->user()->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('You dont have  access to this store', 403);
+            }
+
+
+
+
+            $suppliers = Supplier::search(
+                request('query') ?? '',
+                function ($meilsearch, string $query, array $options) {
+                    $options['attributesToHighlight'] =  ['name', 'phone_number'];
+                    return $meilsearch->search($query, $options);
+                }
+            )->where('store_id', $store_id)
+
+                ->orderBy('created_at', 'desc')->get();
+
+
+
+
+            return $this->successResponse('Searched suppliers retrieved', 200, [
+                'suppliers' =>  SupplierResource::collection($suppliers),
+            ]);
+        } catch (\Exception $e) {
+            Log::error("SupplierController@searchSuppliers", ["error" => $e->getMessage(), 'query' =>    request('query')]);
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+
+
+
+
     public function listSuppliers(int $store_id)
     {
 

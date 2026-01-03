@@ -66,6 +66,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:api', 'throttle:api']], f
     });
 
     Route::group(['prefix' => 'suppliers'], function () {
+        Route::get('{store_id}/search', [SupplierController::class, 'searchSuppliers']);
+
         Route::post('', [SupplierController::class, 'createSupplier']);
         Route::get('{store_id}', [SupplierController::class, 'listSuppliers']);
         Route::get('{supplier_id}/single', [SupplierController::class, 'getSupplier']);
