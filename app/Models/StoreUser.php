@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\Pivot;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class StoreUser extends Model
+class StoreUser extends Pivot
 {
     use HasFactory, Notifiable;
 
@@ -24,6 +25,7 @@ class StoreUser extends Model
         'role',
         'is_default',
     ];
+    protected $table = 'store_users';
 
     /**
      * The attributes that should be hidden for serialization.
