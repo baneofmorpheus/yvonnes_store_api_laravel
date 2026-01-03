@@ -167,6 +167,11 @@ return [
                 'filterableAttributes' => ['store_id',],
                 'sortableAttributes' => ['created_at'],
             ],
+            User::class => [
+                'searchableAttributes' => ['name', 'email'],
+                'filterableAttributes' => ['store_id',],
+                'sortableAttributes' => ['created_at'],
+            ],
         ],
     ],
 

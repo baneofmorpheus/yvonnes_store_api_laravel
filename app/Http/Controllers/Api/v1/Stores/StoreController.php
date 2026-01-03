@@ -10,6 +10,7 @@ use App\Http\Requests\Store\RemoveUserFromStoreRequest;
 use App\Http\Requests\Store\UpdateStoreRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\StoreResource;
+use App\Http\Resources\UserCollection;
 use App\Models\User;
 use App\Models\Store;
 use App\Services\StoreService;
@@ -117,6 +118,36 @@ class StoreController extends Controller
                 "line" => $e->getLine(),
             ]);
 
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+
+
+    public function listUsers(int $store_id)
+    {
+
+        try {
+
+
+            if (!auth()->user()->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('You dont have  access to this store', 403);
+            }
+            $perPage = (int) request('per_page') ?? 20;
+
+            $store = Store::find($store_id);
+            $users = $store->users()          // use the relation
+                ->orderBy('users.name', 'asc') // order by user name
+                ->paginate($perPage);
+            return $this->successResponse('Users retrieved', 200, [
+                'users' =>  new UserCollection($users),
+
+
+            ]);
+        } catch (\Exception $e) {
+            Log::error("UserController@listUsers", [
+                "error" => $e->getMessage(),
+                'store_id' => $store_id
+            ]);
             return $this->errorResponse('An error occured', 500, [], $e->getMessage());
         }
     }

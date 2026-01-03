@@ -44,6 +44,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:api', 'throttle:api']], f
 
     Route::group(['prefix' => 'stores'], function () {
         Route::post('{store_id}/add-user', [StoreController::class, 'addUserToStore']);
+        Route::get('{store_id}', [StoreController::class, 'listUsers']);
+
         Route::post('{store_id}', [StoreController::class, 'updateStore']);
         Route::post('{store_id}/add-user', [StoreController::class, 'addUserToStore']);
         Route::post('{store_id}/remove-user', [StoreController::class, 'removeUserStore']);

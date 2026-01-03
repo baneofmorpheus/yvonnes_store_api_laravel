@@ -100,7 +100,7 @@ class SupplierController extends Controller
 
 
             $suppliers = Supplier::where('store_id', $store_id)
-                ->orderBy('created_at', 'desc')->paginate($perPage);
+                ->orderBy('name', 'asc')->paginate($perPage);
 
 
 

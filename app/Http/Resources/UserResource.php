@@ -14,6 +14,10 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $scout_data = $this->scoutMetadata();
+        if (isset($scout_data) && isset($scout_data['_formatted'])) {
+            $scout_data = $scout_data['_formatted'];
+        }
 
         return [
 
@@ -22,6 +26,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'is_active' => (bool) $this->is_active,
+            '_formatted' => $scout_data
+
         ];
     }
 }
