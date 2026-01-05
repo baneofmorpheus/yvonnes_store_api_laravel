@@ -137,7 +137,7 @@ class StoreController extends Controller
             $perPage = (int) request('per_page') ?? 20;
 
             $store = Store::find($store_id);
-            $users = $store->users()          // use the relation
+            $users = $store->users()->where('users.id', '!=', auth()->id())      // use the relation
                 ->orderBy('users.name', 'asc') // order by user name
                 ->paginate($perPage);
             return $this->successResponse('Users retrieved', 200, [
