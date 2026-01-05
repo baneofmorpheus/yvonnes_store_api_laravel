@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->string('name');
             $table->string('address')->nullable();
-            $table->string('phone_number')->nullable();
+            $table->string('phone_number')->nullable()->unique();
             $table->unsignedBigInteger('store_id');
             $table->foreign('store_id')->references('id')->on('stores');
             $table->softDeletes();

@@ -29,12 +29,14 @@ class CustomerController extends Controller
 
             DB::beginTransaction();
 
-            $supplier =  Customer::create(
+            $customer =  Customer::create(
                 $validated_data,
             );
+            DB::commit();
+
 
             return $this->successResponse('Customer created ', 201, [
-                'customer' => new CustomerResource($supplier)
+                'customer' => new CustomerResource($customer)
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -100,7 +102,7 @@ class CustomerController extends Controller
 
 
             $customers = Customer::where('store_id', $store_id)
-                ->orderBy('created_at', 'asc')->paginate($perPage);
+                ->orderBy('name', 'asc')->paginate($perPage);
 
 
 

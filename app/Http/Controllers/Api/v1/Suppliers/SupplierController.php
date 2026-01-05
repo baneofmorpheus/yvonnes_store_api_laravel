@@ -30,6 +30,7 @@ class SupplierController extends Controller
             DB::beginTransaction();
 
             $supplier =  Supplier::create($validated_data);
+            DB::commit();
 
             return $this->successResponse('Supplier created ', 201, [
                 'supplier' => new SupplierResource($supplier)
