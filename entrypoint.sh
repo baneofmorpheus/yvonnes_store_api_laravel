@@ -22,6 +22,8 @@ php artisan scout:import "App\Models\Invoice"
 php artisan scout:import "App\Models\Product"
 php artisan scout:import "App\Models\Customer"
 php artisan scout:import "App\Models\Supplier"
+php artisan scout:import "App\Models\Purchase"
+php artisan scout:import "App\Models\User"
 
 php-fpm &
 nginx -g 'daemon off;'

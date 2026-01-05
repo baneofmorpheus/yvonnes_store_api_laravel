@@ -11,6 +11,9 @@ use App\Models\Product;
 use App\Models\Supplier;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\PurchaseItem;
+use App\Models\InvoiceItem;
+use App\Models\Purchase;
 
 class UserSeeder extends Seeder
 {
@@ -49,6 +52,23 @@ class UserSeeder extends Seeder
             ->count(50)
             ->create();
 
+
+        Purchase::factory()
+            ->has(PurchaseItem::factory()->count(4), 'purchaseItems')
+            ->count(100)
+            ->create([
+                'store_id' => $store->id,
+
+            ]);
+
+
+        Invoice::factory()
+            ->has(InvoiceItem::factory()->count(4), 'invoiceItems')
+            ->count(100)
+            ->create([
+                'store_id' => $store->id,
+
+            ]);
 
         $staff->each(function ($user) use ($store) {
             StoreUser::factory()->create([

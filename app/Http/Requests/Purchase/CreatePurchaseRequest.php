@@ -25,7 +25,6 @@ class CreatePurchaseRequest extends FormRequest
     {
 
         return [
-            'store_id' => ['integer', 'required', 'exists:stores,id'],
             'supplier_id' => ['integer', 'required', 'exists:suppliers,id'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'integer', 'exists:products,id'],

@@ -13,6 +13,16 @@ class InvoiceItem extends Model
 {
     use HasFactory, SoftDeletes;
 
+
+    protected $fillable = [
+        'invoice_id',
+        'product_id',
+        'quantity_purchased',
+        'unit_price',
+        'item_total',
+    ];
+
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);

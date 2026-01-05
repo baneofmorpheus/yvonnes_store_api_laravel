@@ -117,6 +117,46 @@ class InvoiceController extends Controller
     }
 
 
+    public function searchInvoice(int $store_id)
+    {
+
+        try {
+
+
+
+
+
+            if (!auth()->user()->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('You dont have  access to this store', 403);
+            }
+
+
+
+
+            $invoices = Invoice::search(
+                request('query') ?? '',
+                function ($meilsearch, string $query, array $options) {
+                    $options['attributesToHighlight'] =  ['customer_name'];
+                    return $meilsearch->search($query, $options);
+                }
+            )->where('store_id', $store_id)
+
+                ->orderBy('created_at', 'desc')->get();
+
+
+
+
+            return $this->successResponse('Searched invoices retrieved', 200, [
+                'invoices' =>  InvoiceResource::collection($invoices),
+            ]);
+        } catch (\Exception $e) {
+            Log::error("InvoiceController@searchInvoice", ["error" => $e->getMessage(), 'query' =>    request('query')]);
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+
+
+
     public function getInvoice(int $invoice_id, int $store_id)
     {
 

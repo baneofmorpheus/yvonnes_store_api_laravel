@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 
 class Purchase extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Searchable;
 
     protected $fillable = [
         'supplier_id',
@@ -31,5 +32,19 @@ class Purchase extends Model
     public function purchaseItems(): HasMany
     {
         return $this->hasMany(PurchaseItem::class);
+    }
+
+
+
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'store_id' => $this->store_id,
+            'supplier_id' => $this->supplier_id,
+            'supplier_name' => $this->supplier->name ?? null,
+            'created_at' => $this->created_at->timestamp,
+            'total' => $this->total,
+        ];
     }
 }

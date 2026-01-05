@@ -13,7 +13,7 @@ class StoreService
     {
 
         $store = Store::create([
-            'name' =>  fake()->name() . " Store",
+            'name' =>  fake()->word() . " Store",
             'user_id' => $user_id,
         ]);
 

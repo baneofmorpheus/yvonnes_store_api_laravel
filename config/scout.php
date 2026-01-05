@@ -4,6 +4,7 @@ use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Supplier;
+use App\Models\Purchase;
 
 
 return [
@@ -170,6 +171,16 @@ return [
             User::class => [
                 'searchableAttributes' => ['name', 'email'],
                 'filterableAttributes' => ['store_id',],
+                'sortableAttributes' => ['created_at'],
+            ],
+            Purchase::class => [
+                'searchableAttributes' => ['supplier_name'],
+                'filterableAttributes' => ['store_id'],
+                'sortableAttributes' => ['created_at'],
+            ],
+            Invoice::class => [
+                'searchableAttributes' => ['customer_name'],
+                'filterableAttributes' => ['store_id'],
                 'sortableAttributes' => ['created_at'],
             ],
         ],

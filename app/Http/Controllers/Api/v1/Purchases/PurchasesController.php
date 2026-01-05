@@ -23,16 +23,22 @@ class PurchasesController extends Controller
 
 
 
-    public function createPurchase(CreatePurchaseRequest $request)
+    public function createPurchase(int $store_id, CreatePurchaseRequest $request)
     {
 
         try {
+
+            if (!auth()->user()->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('You dont have  access to this store', 403);
+            }
+
+
             $validated_data = $request->validated();
 
             DB::beginTransaction();
 
             $purchase =  Purchase::create([
-                'store_id' => $validated_data['store_id'],
+                'store_id' => $store_id,
                 'supplier_id' => $validated_data['supplier_id'],
                 'total' => collect($validated_data['items'])
                     ->sum(fn($item) => $item['quantity_purchased'] * $item['unit_price'])
@@ -77,6 +83,49 @@ class PurchasesController extends Controller
             return $this->errorResponse('An error occured', 500, [], $e->getMessage());
         }
     }
+
+
+
+    public function searchPurchases(int $store_id)
+    {
+
+        try {
+
+
+
+
+
+            if (!auth()->user()->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('You dont have  access to this store', 403);
+            }
+
+
+
+
+            $purchases = Purchase::search(
+                request('query') ?? '',
+                function ($meilsearch, string $query, array $options) {
+                    $options['attributesToHighlight'] =  ['supplier_name'];
+                    return $meilsearch->search($query, $options);
+                }
+            )->where('store_id', $store_id)
+
+                ->orderBy('created_at', 'desc')->get();
+
+
+
+
+            return $this->successResponse('Searched purchases retrieved', 200, [
+                'purchases' =>  PurchaseResource::collection($purchases),
+            ]);
+        } catch (\Exception $e) {
+            Log::error("PurchasesController@searchPurchases", ["error" => $e->getMessage(), 'query' =>    request('query')]);
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+
+
+
 
     public function getPurchases(int $store_id)
     {

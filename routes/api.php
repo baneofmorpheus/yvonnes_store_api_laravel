@@ -55,6 +55,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:api', 'throttle:api']], f
     Route::group(['prefix' => 'purchases'], function () {
         Route::post('{store_id}', [PurchasesController::class, 'createPurchase']);
         Route::get('{store_id}', [PurchasesController::class, 'getPurchases']);
+        Route::get('{store_id}/search', [PurchasesController::class, 'searchPurchases']);
+
         Route::get('{purchase_id}/single', [PurchasesController::class, 'getSinglePurchase']);
         Route::delete('{purchase_id}', [PurchasesController::class, 'deletePurchase']);
     });

@@ -15,6 +15,15 @@ class PurchaseResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $scout_data = $this->scoutMetadata();
+        if (isset($scout_data) && isset($scout_data['_formatted'])) {
+            $scout_data = $scout_data['_formatted'];
+        }
+
+
+
+
+
         return [
 
             'id' => $this->id,
@@ -24,6 +33,8 @@ class PurchaseResource extends JsonResource
             'items' => PurchaseItemResource::collection($this->purchaseItems),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            '_formatted' => $scout_data
+
         ];
     }
 }
