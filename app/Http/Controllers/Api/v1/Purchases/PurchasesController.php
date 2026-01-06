@@ -68,7 +68,7 @@ class PurchasesController extends Controller
 
                 ]);
 
-                $product->update(['quanity_remaining' => $product->quantity_remaining + $item['quantity_purchased']]);
+                $product->update(['quantity_remaining' => $product->quantity_remaining + $item['quantity_purchased']]);
             }
 
             $purchase->refresh();
@@ -227,7 +227,7 @@ class PurchasesController extends Controller
                 ]);
 
 
-                $product->update(['quanity_remaining' => $product->quantity_remaining - $item['quantity_purchased']]);
+                $product->update(['quantity_remaining' => $product->quantity_remaining - $item['quantity_purchased']]);
             }
 
             $purchase->delete();
