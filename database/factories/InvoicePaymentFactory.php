@@ -24,8 +24,8 @@ class InvoicePaymentFactory extends Factory
         return [
             'invoice_id' => Invoice::get()->random()->id,
             'notes' => fake()->paragraphs(2, true),
-            'amount_paid'=>fake()->numberBetween(1000, 400000),
-            'payment_type'=>fake()->randomElement([PaymentType::CASH, PaymentType::CHEQUE, PaymentType::TRANSFER, PaymentType::POS]),
+            'amount_paid' => fake()->numberBetween(1000, 400000),
+            'payment_type' => fake()->randomElement([PaymentType::CASH, PaymentType::CHEQUE, PaymentType::TRANSFER, PaymentType::POS]),
         ];
     }
 }

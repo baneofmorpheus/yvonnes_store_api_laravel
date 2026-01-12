@@ -59,13 +59,13 @@ class User extends Authenticatable
     public function storeBelongsToUser(int $store_id): bool
     {
 
-        return  StoreUser::where('id', $store_id)
+        return  StoreUser::where('store_id', $store_id)
             ->where('user_id', $this->id)->exists();
     }
     public function getStoreRole(int $store_id): string
     {
 
         return  StoreUser::where('store_id', $store_id)
-            ->where('user_id', $this->id)->first()?->role;
+            ->where('user_id', $this->id)->value('role');
     }
 }

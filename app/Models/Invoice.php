@@ -26,8 +26,13 @@ class Invoice extends Model
         'status',
         'notes',
         'tax_percentage',
+
     ];
 
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
 
 
     public function invoiceItems(): HasMany

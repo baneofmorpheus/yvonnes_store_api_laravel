@@ -24,8 +24,8 @@ class PurchaseItemFactory extends Factory
 
         $quantity = fake()->numberBetween(30, 40);
         return [
-            'purchase_id' => Purchase::factory()->create(),
-            'product_id' => Product::factory()->create(),
+            'purchase_id' => Purchase::get()->random()->id,
+            'product_id' => Product::get()->random()->id,
             'quantity_purchased' => $quantity,
             'quantity_available' => $quantity,
             'unit_price' => fake()->numberBetween(1000, 3000),

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Traits\ApiResponser;
 use App\Http\Requests\Invoice\CreateInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
+use App\Http\Resources\InvoiceCollection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\Invoice;
@@ -108,7 +109,7 @@ class InvoiceController extends Controller
 
 
             return $this->successResponse('Invoices retrieved', 200, [
-                'invoices' =>  InvoiceResource::collection($invoices->items()),
+                'invoices' =>  new InvoiceCollection($invoices),
             ]);
         } catch (\Exception $e) {
             Log::error("InvoiceController@getInvoices", ["error" => $e->getMessage()]);

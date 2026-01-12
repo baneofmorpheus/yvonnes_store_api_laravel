@@ -18,10 +18,10 @@ class InvoiceItemResource extends JsonResource
         return [
             'id' => $this->id,
             'quantity_purchased' => $this->quantity_purchased,
-            'product_id' => $this->quantity_remaining,
+            'product_id' => $this->product_id,
             'unit_price' => $this->unit_price,
             'item_total' => $this->item_total,
-            'product' => ProductResource::collection($this->product),
+            'product' => new ProductResource($this->product),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

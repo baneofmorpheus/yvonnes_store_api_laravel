@@ -28,7 +28,7 @@ class InvoiceFactory extends Factory
         $sub_total = $total - $taxes;
         $store_id = Store::get()->random()->id;
         return [
-            'customer_id' => Customer::where('store_id', $store_id)->firstOrFail()->id,
+            'customer_id' => Customer::get()->random()->id,
             'store_id' => $store_id,
             'payment_balance' => 0,
             'status' => fake()->randomElement([

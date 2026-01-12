@@ -24,7 +24,7 @@ class SupplierFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'store_id' => Store::factory(),
+            'store_id' => Store::get()->random()->id,
             'address' => fake()->address(),
             'phone_number' => fake()->phoneNumber(),
         ];

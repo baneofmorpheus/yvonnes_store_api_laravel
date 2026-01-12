@@ -16,21 +16,32 @@ class InvoiceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+
+        $scout_data = $this->scoutMetadata();
+        if (isset($scout_data) && isset($scout_data['_formatted'])) {
+            $scout_data = $scout_data['_formatted'];
+        }
+
+
+
+
         return [
 
             'id' => $this->id,
             'store_id' => $this->store_id,
             'customer' => new CustomerResource($this->customer),
-            'supplier' => $this->supplier,
             'sub_total' => $this->sub_total,
             'discount_amount' => $this->discount_amount,
             'tax_amount' => $this->tax_amount,
             'total' => $this->total,
             'status' => $this->status,
             'notes' => $this->notes,
-            'items' => InvoiceItemResource::collection($this->items),
+            'items' => InvoiceItemResource::collection($this->invoiceItems),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            '_formatted' => $scout_data
+
         ];
     }
 }
