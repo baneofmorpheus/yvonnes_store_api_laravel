@@ -30,12 +30,7 @@ class InvoiceController extends Controller
             $validated_data = $request->validated();
 
             DB::beginTransaction();
-            $sub_total = collect($validated_data['items'])
-                ->sum(fn($item) => $item['quantity_purchased'] * $item['unit_price']);
 
-            $tax_amount = ($sub_total * ($validated_data['tax_percentage'] / 100));
-
-            $total = ($sub_total - $validated_data['discount_amount']) + $tax_amount;
 
             $invoice =  Invoice::create([
                 'store_id' => $validated_data['store_id'],
@@ -44,10 +39,10 @@ class InvoiceController extends Controller
                 'tax_percentage' => $validated_data['tax_percentage'],
                 'status' => $validated_data['status'],
                 'notes' => $validated_data['notes'],
-                'tax_amount' => $tax_amount,
+                'tax_amount' => 0,
 
-                'total' => $total,
-                'payment_balance' => $total,
+                'total' => 0,
+                'payment_balance' => 0,
             ]);
 
             foreach ($validated_data['items'] as $item) {
@@ -60,17 +55,31 @@ class InvoiceController extends Controller
                 }
 
 
-                InvoiceItem::create([
+                $invoice_item = InvoiceItem::create([
                     'invoice_id'        => $invoice->id,
                     'product_id'         => $item['product_id'],
                     'quantity_purchased' => $item['quantity_purchased'],
-                    'unit_price'         => $item['unit_price'],
-                    'item_total'         => $item['quantity_purchased'] * $item['unit_price'],
+                    'unit_price'         => $product->unit_price,
+                    'item_total'         => $item['quantity_purchased'] * $product->unit_price,
                 ]);
 
+                $sub_total = $sub_total + $invoice_item->item_total;
                 InvoiceService::updateSalePurchaseRecords($invoice->id, $product->id, $item['quantity_purchased']);
             }
 
+            $tax_amount = ($sub_total * ($validated_data['tax_percentage'] / 100));
+
+            $total = ($sub_total - $validated_data['discount_amount']) + $tax_amount;
+
+
+            $invoice->update([
+                'total' => $total,
+                'tax_amount' => $tax_amount,
+                'payment_balance' => $total,
+
+
+
+            ]);
             $invoice->refresh();
             DB::commit();
             return $this->successResponse('Invoice created ', 201, [
