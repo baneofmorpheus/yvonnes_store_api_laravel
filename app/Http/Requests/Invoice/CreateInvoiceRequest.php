@@ -27,6 +27,8 @@ class CreateInvoiceRequest extends FormRequest
         return [
             'customer_id' => ['integer', 'required', 'exists:customers,id'],
             'items' => ['required', 'array', 'min:1'],
+            'notes' => ['nullable', 'string'],
+            'discount_amount' => ['required', 'integer', 'min:0'],
             'items.*.product_id' => ['required', 'integer', 'exists:products,id'],
             'items.*.quantity_purchased'   => ['required', 'integer', 'min:1'],
         ];

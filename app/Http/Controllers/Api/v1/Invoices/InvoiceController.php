@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Product;
+use App\Services\UtilityService;
 
 use App\Services\InvoiceService;
 
@@ -23,7 +24,7 @@ class InvoiceController extends Controller
 
 
 
-    public function createInvoice(CreateInvoiceRequest $request)
+    public function createInvoice(int $store_id, CreateInvoiceRequest $request)
     {
 
         try {
@@ -31,15 +32,18 @@ class InvoiceController extends Controller
 
             DB::beginTransaction();
 
-
+            $sub_total = 0;
             $invoice =  Invoice::create([
-                'store_id' => $validated_data['store_id'],
+                'store_id' => $store_id,
                 'customer_id' => $validated_data['customer_id'],
                 'discount_amount' => $validated_data['discount_amount'],
-                'tax_percentage' => $validated_data['tax_percentage'],
-                'status' => $validated_data['status'],
+                'tax_percentage' => 15,
+                'status' => 'pending_payment',
                 'notes' => $validated_data['notes'],
+                'code' => UtilityService::generateUniqueId(Invoice::class, 'code'),
                 'tax_amount' => 0,
+
+                'sub_total' => $sub_total,
 
                 'total' => 0,
                 'payment_balance' => 0,
@@ -67,12 +71,18 @@ class InvoiceController extends Controller
                 InvoiceService::updateSalePurchaseRecords($invoice->id, $product->id, $item['quantity_purchased']);
             }
 
-            $tax_amount = ($sub_total * ($validated_data['tax_percentage'] / 100));
 
-            $total = ($sub_total - $validated_data['discount_amount']) + $tax_amount;
+            $sub_total =  max(
+                0,
+                $sub_total - $validated_data['discount_amount']
+            );
+            $tax_amount = ($sub_total * (15 / 100));
+
+            $total = $sub_total + $tax_amount;
 
 
             $invoice->update([
+                'sub_total' => $sub_total,
                 'total' => $total,
                 'tax_amount' => $tax_amount,
                 'payment_balance' => $total,

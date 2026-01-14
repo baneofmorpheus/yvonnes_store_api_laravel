@@ -23,18 +23,18 @@ class InvoiceService
         while ($quantity_deducted < $quantity) {
 
             $purchase_item = PurchaseItem::where('product_id', $product_id)
-                ->where('quantity_remaining', '>', 0)
+                ->where('quantity_available', '>', 0)
                 ->oldest()->first();
 
-            if ($purchase_item->quantity_remaining >= $quantity) {
+            if ($purchase_item->quantity_available >= $quantity) {
 
-                $purchase_item->quantity_remaining = $purchase_item->quantity_remaining - $quantity;
+                $purchase_item->quantity_available = $purchase_item->quantity_available - $quantity;
 
                 $quantity_deducted = $quantity;
             } else {
 
-                $quantity_deducted = $quantity_deducted + $purchase_item->quantity_remaining;
-                $purchase_item->quantity_remaining = 0;
+                $quantity_deducted = $quantity_deducted + $purchase_item->quantity_available;
+                $purchase_item->quantity_available = 0;
             }
             $purchase_item->save();
 
