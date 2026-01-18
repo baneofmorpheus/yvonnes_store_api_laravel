@@ -36,8 +36,23 @@ class UserSeeder extends Seeder
         ]);
 
         Product::factory()
-            ->count(200)
+
+            ->count(10)
             ->create(['store_id' => $store->id]);
+
+        Purchase::factory()
+            ->has(PurchaseItem::factory()->count(4), 'purchaseItems')
+            ->count(100)
+            ->create([
+                'store_id' => $store->id,
+
+            ]);
+
+        // Product::factory()
+        //     ->has(PurchaseItem::factory()->count(4), 'purchaseItems')
+
+        //     ->count(200)
+        //     ->create(['store_id' => $store->id]);
 
         Supplier::factory()
             ->count(200)
@@ -53,13 +68,7 @@ class UserSeeder extends Seeder
             ->create();
 
 
-        Purchase::factory()
-            ->has(PurchaseItem::factory()->count(4), 'purchaseItems')
-            ->count(100)
-            ->create([
-                'store_id' => $store->id,
 
-            ]);
 
 
         Invoice::factory()
