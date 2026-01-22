@@ -37,7 +37,7 @@ class InvoicePaymentController extends Controller
         }
 
         $total_payment = InvoicePayment::where('invoice_id', $invoice->id)
-            ->sum('amount_paid');
+            ->sum('amount');
         $expected_total = $invoice->total - $total_payment;
 
 
@@ -52,7 +52,7 @@ class InvoicePaymentController extends Controller
             DB::beginTransaction();
 
 
-            $payment = InvoicePayment::create($validated_data);
+            $payment = InvoicePayment::create([...$validated_data, 'invoice_id' => $invoice->id]);
 
 
             $invoice_status = 'part_payment';
@@ -65,7 +65,7 @@ class InvoicePaymentController extends Controller
 
 
             $total_payment = InvoicePayment::where('invoice_id', $invoice->id)
-                ->sum('amount_paid');
+                ->sum('amount');
 
             $invoice->update([
                 'status' => $invoice_status,
@@ -140,7 +140,7 @@ class InvoicePaymentController extends Controller
             $invoice = $invoice_payment->invoice;
 
             $invoice_status = 'part_payment';
-            $payment_balance = $invoice->payment_balance + $invoice_payment->amount_paid;
+            $payment_balance = $invoice->payment_balance + $invoice_payment->amount;
 
             if ($invoice->total == $payment_balance) {
                 $invoice_status = 'pending_payment';
