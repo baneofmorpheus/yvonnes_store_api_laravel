@@ -70,7 +70,7 @@ class InvoiceService
         $product_movements = ProductMovement::where('invoice_id', $invoice_id)
             ->where('type', 'sale')->get();
 
-        foreach ($product_movements['items'] as $item) {
+        foreach ($product_movements as $item) {
 
             $purchase_item = PurchaseItem::find($item->purchase_item_id);
 

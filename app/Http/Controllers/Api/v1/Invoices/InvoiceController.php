@@ -205,18 +205,20 @@ class InvoiceController extends Controller
     }
 
 
-    public function deleteInvoice(int $invoice_id, int $store_id)
+    public function deleteInvoice(int $invoice_id)
     {
         try {
 
             $user = auth()->user();
 
-            if (!$user->storeBelongsToUser($store_id)) {
+            $invoice = Invoice::where('id', $invoice_id)
+                ->firstOrFail();
+
+            if (!$user->storeBelongsToUser($invoice->store_id)) {
                 return $this->errorResponse('Unauthorized', 403);
             }
 
-            $invoice = Invoice::where('id', $invoice_id)
-                ->where('store_id', $store_id)->firstOrFail();
+
 
             InvoiceService::updateSaleReturnPurchaseRecords($invoice->id);
 
