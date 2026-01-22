@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\v1\Stores\StoreController;
 use App\Http\Controllers\Api\v1\Suppliers\SupplierController;
 use App\Http\Controllers\Api\v1\Products\ProductController;
 use App\Http\Controllers\Api\v1\Customers\CustomerController;
+use App\Http\Controllers\Api\v1\Invoices\InvoicePaymentController;
 use App\Http\Controllers\Api\v1\Invoices\InvoiceController;
 
 /*
@@ -41,6 +42,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['auth:api', 'throttle:api']], f
         Route::delete('{customer_id}', [CustomerController::class, 'deleteCustomer']);
     });
     Route::group(['prefix' => 'invoices'], function () {
+
+        Route::group(['prefix' => 'payments'], function () {
+            Route::post('{invoice_id}', [InvoicePaymentController::class, 'createPayment']);
+            Route::get('{invoice_id}', [InvoicePaymentController::class, 'getPayments']);
+            Route::delete('{payment_id}', [InvoicePaymentController::class, 'deletePayment']);
+        });
+
         Route::post('{store_id}', [InvoiceController::class, 'createInvoice']);
         Route::get('{store_id}', [InvoiceController::class, 'getInvoices']);
         Route::get('{store_id}/search', [InvoiceController::class, 'searchInvoice']);

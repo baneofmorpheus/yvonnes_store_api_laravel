@@ -21,6 +21,7 @@ class InvoicePaymentResource extends JsonResource
             'invoice_id' => $this->invoice_id,
             'customer' => new CustomerResource($this->customer),
             'amount' => $this->amount,
+            'payment_type' => $this->payment_type,
             'notes' => $this->notes,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

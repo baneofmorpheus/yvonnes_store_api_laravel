@@ -25,10 +25,9 @@ class CreateInvoicePaymentRequest extends FormRequest
     {
 
         return [
-            'invoice_id' => ['integer', 'required', 'exists:invoices,id'],
             'amount' => ['required', 'numeric', 'min:1'],
             'payment_type' => ['required', 'string', 'in:cash,cheque,transfer,pos'],
-            'notes' => ['required', 'string', 'in:cash,cheque,transfer,pos'],
+            'notes' => ['nullable', 'string'],
         ];
     }
 }

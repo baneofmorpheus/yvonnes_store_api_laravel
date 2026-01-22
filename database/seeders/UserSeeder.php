@@ -13,6 +13,7 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\PurchaseItem;
 use App\Models\InvoiceItem;
+use App\Models\InvoicePayment;
 use App\Models\Purchase;
 
 class UserSeeder extends Seeder
@@ -34,29 +35,36 @@ class UserSeeder extends Seeder
             'role' => 'owner',
             'is_default' => true,
         ]);
-
-        Product::factory()
-
-            ->count(10)
-            ->create(['store_id' => $store->id]);
-
-        Purchase::factory()
-            ->has(PurchaseItem::factory()->count(4), 'purchaseItems')
-            ->count(100)
-            ->create([
-                'store_id' => $store->id,
-
-            ]);
-
-        // Product::factory()
-        //     ->has(PurchaseItem::factory()->count(4), 'purchaseItems')
-
-        //     ->count(200)
-        //     ->create(['store_id' => $store->id]);
-
         Supplier::factory()
             ->count(200)
             ->create(['store_id' => $store->id]);
+        $products = Product::factory()
+
+            ->count(100)
+            ->create(['store_id' => $store->id]);
+
+
+        $products->each(function (Product $product) use ($store) {
+
+            Purchase::factory()
+                ->has(
+                    PurchaseItem::factory()
+                        ->count(4)
+                        ->state([
+                            'product_id' => $product->id,
+                        ]),
+                    'purchaseItems'
+                )
+                ->count(2)
+                ->create([
+                    'store_id' => $store->id,
+                ]);
+        });
+
+
+
+
+
 
         Customer::factory()
             ->count(200)
@@ -73,6 +81,7 @@ class UserSeeder extends Seeder
 
         Invoice::factory()
             ->has(InvoiceItem::factory()->count(4), 'invoiceItems')
+            ->has(InvoicePayment::factory()->count(4), 'payments')
             ->count(100)
             ->create([
                 'store_id' => $store->id,

@@ -177,20 +177,21 @@ class InvoiceController extends Controller
 
 
 
-    public function getInvoice(int $invoice_id, int $store_id)
+    public function getInvoice(int $invoice_id)
     {
 
         try {
 
+            $invoice = Invoice::where('id', $invoice_id)->firstOrFail();
+
             $user = auth()->user();
 
-            if (!$user->storeBelongsToUser($store_id)) {
+            if (!$user->storeBelongsToUser($invoice->store_id)) {
                 return $this->errorResponse('Unauthorized', 403);
             }
 
-            $invoice = Invoice::where('id', $invoice_id)->where('store_id', $store_id)->firstOrFail();
 
-            return $this->successResponse('Supplier retrieved', 200, [
+            return $this->successResponse('Invoice retrieved', 200, [
                 'invoice' =>  new InvoiceResource($invoice)
 
             ]);

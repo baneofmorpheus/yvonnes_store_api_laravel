@@ -123,20 +123,21 @@ class InvoicePaymentController extends Controller
 
 
 
-    public function deletePayment(int $invoice_id, int $payment_id)
+    public function deletePayment(int $payment_id)
     {
         try {
 
+            $invoice_payment = InvoicePayment::where('id', $payment_id)
+                ->firstOrFail();
 
-            $invoice = Invoice::findOrFail($invoice_id);
             $user = auth()->user();
 
-            if (!$user->storeBelongsToUser($invoice->store_id)) {
+            if (!$user->storeBelongsToUser($invoice_payment->invoice->store_id)) {
                 return $this->errorResponse('Unauthorized', 403);
             }
 
-            $invoice_payment = InvoicePayment::where('id', $payment_id)
-                ->where('invoice_id', $invoice->id)->firstOrFail();
+
+            $invoice = $invoice_payment->invoice;
 
             $invoice_status = 'part_payment';
             $payment_balance = $invoice->payment_balance + $invoice_payment->amount_paid;
