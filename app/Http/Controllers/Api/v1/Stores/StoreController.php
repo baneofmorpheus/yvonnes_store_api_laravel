@@ -12,6 +12,8 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\StoreResource;
 use App\Http\Resources\UserCollection;
 use App\Models\User;
+use App\Models\Customer;
+use App\Models\Invoice;
 use App\Models\Store;
 use App\Services\StoreService;
 use Illuminate\Support\Facades\Log;
@@ -147,6 +149,46 @@ class StoreController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error("UserController@listUsers", [
+                "error" => $e->getMessage(),
+                'store_id' => $store_id
+            ]);
+            return $this->errorResponse('An error occured', 500, [], $e->getMessage());
+        }
+    }
+
+
+    public function getAnalytics(int $store_id)
+    {
+
+        try {
+
+
+            if (!auth()->user()->storeBelongsToUser($store_id)) {
+                return $this->errorResponse('You dont have  access to this store', 403);
+            }
+
+            $customer_count = Customer::where('store_id', $store_id)->count();
+            $invoice_count = invoice::where('store_id', $store_id)->count();
+            $monthly_total = Invoice::where('store_id', $store_id)
+                ->whereYear('created_at', now()->year)
+                ->selectRaw('MONTH(created_at) as month, SUM(total) as total')
+                ->groupBy('month')
+                ->pluck('total', 'month');
+
+
+            $monthly_total = collect(range(1, 12))->map(fn($m) => [
+                'month' => $m,
+                'total' => $monthly_total[$m] ?? 0,
+            ]);
+            return $this->successResponse('Data retrieved', 200, [
+                'customer_count' =>  $customer_count,
+                'invoice_count' =>  $invoice_count,
+                'monthly_total' =>  $monthly_total,
+
+
+            ]);
+        } catch (\Exception $e) {
+            Log::error("StoreController@getAnalytics", [
                 "error" => $e->getMessage(),
                 'store_id' => $store_id
             ]);

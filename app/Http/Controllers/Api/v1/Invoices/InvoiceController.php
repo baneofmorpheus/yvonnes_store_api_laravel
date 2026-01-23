@@ -13,7 +13,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceItem;
 use App\Models\Product;
 use App\Services\UtilityService;
-
+use Carbon\Carbon;
 use App\Services\InvoiceService;
 
 class InvoiceController extends Controller
@@ -119,6 +119,12 @@ class InvoiceController extends Controller
 
 
             $invoices = Invoice::where('store_id', $store_id)
+                ->when(request('today'), function ($q) {
+                    $q->whereBetween('created_at', [
+                        Carbon::today()->startOfDay(),
+                        Carbon::today()->endOfDay(),
+                    ]);
+                })
                 ->orderBy('created_at', 'desc')->paginate($perPage);
 
 
